@@ -119,8 +119,8 @@ public class MainActivity extends Activity {
                 JSONArray jsonArray = jsnObject.getJSONArray("matters");
 
                 for (int i=0; i < jsonArray.length(); i++) {
-       //             JSONObject test = jsonArray.getJSONObject(i);
-       //             Log.d("dataRequest", "2" + test.toString());
+     //               JSONObject test = jsonArray.getJSONObject(i);
+    //                Log.d("dataRequest", "3" + test.toString());
 
                     result.add(parser.convertMatter(jsonArray.getJSONObject(i)));
                 }

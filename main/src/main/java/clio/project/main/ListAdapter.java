@@ -50,8 +50,11 @@ public class ListAdapter extends ArrayAdapter<Matters> {
         }
 
         Matters m = itemList.get(position);
-        TextView text = (TextView) v.findViewById(R.id.displayName);
-        text.setText(m.getDisplayName());
+        TextView mainListText1 = (TextView) v.findViewById(R.id.displayName);
+        mainListText1.setText(m.getDisplayName());
+
+        TextView mainListText2 = (TextView) v.findViewById(R.id.clientName);
+        mainListText2.setText(m.getClientName());
 
         return v;
     }

@@ -7,12 +7,17 @@
 
     <TextView android:id="@+id/displayName"
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_centerInParent="true"
-        android:layout_toLeftOf="@+id/edit"
-        android:layout_toRightOf="@+id/icon"
+        android:layout_height="wrap_content"
         android:textColor="#a4b3c5"
         android:textSize="17sp"
+        android:padding="8dp"/>
+
+    <TextView android:id="@+id/clientName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/displayName"
+        android:textColor="#a4b3c5"
+        android:textSize="14sp"
         android:padding="8dp"/>
 
 </RelativeLayout>

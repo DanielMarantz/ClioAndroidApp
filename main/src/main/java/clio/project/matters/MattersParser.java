@@ -1,5 +1,7 @@
 package clio.project.matters;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +35,7 @@ public class MattersParser {
         String openDate = obj.getString("open_date");
         String status = obj.getString("status");
 
-        //         Log.d("dataRequest", displayName); // TESSSSSSTTTTTTT
+                 Log.d("dataRequest", obj.getString("practice_area")); // TESSSSSSTTTTTTT
         //         Log.d("1dataRequest", clientName);
         //         Log.d("2dataRequest", description);
         //         Log.d("3dataRequest", openDate);
