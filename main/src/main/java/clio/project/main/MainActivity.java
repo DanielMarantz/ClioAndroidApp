@@ -147,8 +147,20 @@ public class MainActivity extends Activity {
         dialog.setTitle("DETAILS");
 
         // set the custom dialog components - text, button
-        TextView text = (TextView) dialog.findViewById(R.id.displayName);
-        text.setText(adpt.getItem(position).getDisplayName());
+        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
+        displayText.setText(adpt.getItem(position).getDisplayName());
+
+        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
+        clientText.setText(adpt.getItem(position).getClientName());
+
+        TextView descText = (TextView) dialog.findViewById(R.id.description);
+        descText.setText(adpt.getItem(position).getDescription());
+
+        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
+        openDateText.setText(adpt.getItem(position).getOpenDate());
+
+        TextView statusText = (TextView) dialog.findViewById(R.id.status);
+        statusText.setText(adpt.getItem(position).getStatus());
 
         //Close dialog button
         Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
