@@ -2,10 +2,13 @@ package clio.project.main;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -25,12 +28,20 @@ public class MainActivity extends Activity {
 
     ListView listView;
     private ListAdapter adpt;
+    Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    //    setContentView(R.layout.activity_main);
 
+        // custom title bar
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        setContentView(R.layout.activity_main);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+                R.layout.customtitlebar);
+
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 /*
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -51,6 +62,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
 
+                v.vibrate(100);
                 Log.d("dataRequest", "Position " + position);
             }
 
