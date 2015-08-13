@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
     ListView listView;
     private ListAdapter adpt;
     Vibrator v;
+    TextView totalMatters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.customtitlebar);
+
+        // text of total matters in the custom title bar
+        totalMatters = (TextView) findViewById(R.id.totalNumber);
 
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 /*
@@ -76,14 +80,52 @@ public class MainActivity extends Activity {
         (new AsyncListViewLoader()).execute("https://app.goclio.com/api/v2/matters");
     }
 
+    // button that sends the user to the Matter Details
+    public void matterDetails(int position) {
+
+        // custom dialog
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.matter_details);
+        dialog.setTitle("DETAILS");
+
+        // set the custom dialog components - text, button
+        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
+        displayText.setText(adpt.getItem(position).getDisplayName());
+
+        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
+        clientText.setText(adpt.getItem(position).getClientName());
+
+        TextView descText = (TextView) dialog.findViewById(R.id.description);
+        descText.setText(adpt.getItem(position).getDescription());
+
+        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
+        openDateText.setText(adpt.getItem(position).getOpenDate());
+
+        TextView statusText = (TextView) dialog.findViewById(R.id.status);
+        statusText.setText(adpt.getItem(position).getStatus());
+
+        //Close dialog button
+        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
         private final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
 
         @Override
         protected void onPostExecute(List<Matters> result) {
             super.onPostExecute(result);
-            dialog.dismiss();
             adpt.setItemList(result);
+            totalMatters.setText("" + result.size());
+            dialog.dismiss();
             adpt.notifyDataSetChanged();
         }
 
@@ -136,43 +178,6 @@ public class MainActivity extends Activity {
             }
             return null;
         }
-    }
-
-    // button that sends the user to the Matter Details
-    public void matterDetails(int position) {
-
-        // custom dialog
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.matter_details);
-        dialog.setTitle("DETAILS");
-
-        // set the custom dialog components - text, button
-        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
-        displayText.setText(adpt.getItem(position).getDisplayName());
-
-        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
-        clientText.setText(adpt.getItem(position).getClientName());
-
-        TextView descText = (TextView) dialog.findViewById(R.id.description);
-        descText.setText(adpt.getItem(position).getDescription());
-
-        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
-        openDateText.setText(adpt.getItem(position).getOpenDate());
-
-        TextView statusText = (TextView) dialog.findViewById(R.id.status);
-        statusText.setText(adpt.getItem(position).getStatus());
-
-        //Close dialog button
-        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
-
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
     }
 
     /**
