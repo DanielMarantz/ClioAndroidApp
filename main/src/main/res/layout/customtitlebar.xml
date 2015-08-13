@@ -7,45 +7,34 @@
     android:orientation="horizontal" >
 
     <TextView
-        android:id="@+id/appTotalText"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:padding="8dp"
+        android:padding="18dp"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"/>
-    <!--    android:text="@string/total_app" />     -->
-    
-    <TextView
-        android:id="@+id/appTotal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/appTotalText"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textColor="#000000"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:text="@string/title" />
 
     <TextView
-        android:id="@+id/totalSelectedText"
+        android:id="@+id/totalMatters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/totalSelected"
+        android:layout_toLeftOf="@+id/totalNumber"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"/>
-    <!--    android:text="@string/selected_app"/>   -->
+        android:textStyle="bold"
+        android:text="@string/totalMatters"/>
     
     <TextView
-        android:id="@+id/totalSelected"
+        android:id="@+id/totalNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:padding="8dp"
+        android:padding="18dp"
         android:textColor="#000000"
         android:textSize="15sp"
         android:textStyle="bold"/>

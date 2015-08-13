@@ -2,10 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Custom theme. -->
     </style>
     <style name="CustomTitleBarTheme" parent="android:Theme">
-        <item name="android:windowTitleSize">40dp</item>
+        <item name="android:windowTitleSize">65dp</item>
         <item name="android:windowTitleBackgroundStyle">@style/titleBarBackgroundStyle</item>
 
     </style>

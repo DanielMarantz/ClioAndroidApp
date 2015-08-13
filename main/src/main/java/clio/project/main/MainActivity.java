@@ -1,6 +1,7 @@
 package clio.project.main;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,7 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,6 +66,7 @@ public class MainActivity extends Activity {
                                     int position, long id) {
 
                 v.vibrate(100);
+                matterDetails(position);
                 Log.d("dataRequest", "Position " + position);
             }
 
@@ -132,6 +136,31 @@ public class MainActivity extends Activity {
             }
             return null;
         }
+    }
+
+    // button that sends the user to the Matter Details
+    public void matterDetails(int position) {
+
+        // custom dialog
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.matter_details);
+        dialog.setTitle("DETAILS");
+
+        // set the custom dialog components - text, button
+        TextView text = (TextView) dialog.findViewById(R.id.displayName);
+        text.setText(adpt.getItem(position).getDisplayName());
+
+        //Close dialog button
+        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     /**

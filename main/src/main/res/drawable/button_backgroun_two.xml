@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- Outside panal of buttons -->
+    <item>
+        <shape>
+            <solid android:color="#36474e" />
+
+            <stroke
+                android:width="0dp"
+                android:color="#36474e" />
+
+            <corners android:radius="0dp" />
+
+            <padding
+                android:bottom="6dp"
+                android:left="6dp"
+                android:right="6dp"
+                android:top="6dp" />
+        </shape>
+    </item>
+    
+    <!-- Button shadow -->
+    <item>
+        <shape>
+            <solid android:color="#222f33" />
+
+            <stroke
+                android:width="0dp"
+                android:color="#222f33" />
+
+            <corners android:radius="5dp" />
+
+            <padding
+                android:bottom="4dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+        </shape>
+    </item>
+    
+    <!-- Main part of button -->
+    <item>
+        <shape>
+            <solid android:color="#2cbbe8" />
+
+            <stroke
+                android:width="0dp"
+                android:color="#2cbbe8" />
+
+            <corners android:radius="5dp" />
+
+            <padding
+                android:bottom="3dp"
+                android:left="0dp"
+                android:right="3dp"
+                android:top="0dp" />
+        </shape>
+    </item>
+
+</layer-list>
