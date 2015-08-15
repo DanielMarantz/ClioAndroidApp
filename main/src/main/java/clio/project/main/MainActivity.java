@@ -35,8 +35,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
- //       setContentView(R.layout.activity_main);
+ /*       setContentView(R.layout.activity_main);
 
+        if (savedInstanceState == null) {
+            ImagesFragment fragmentDemo = (ImagesFragment)
+                    getFragmentManager().findFragmentById(R.id.listFragment);
+        }
+*/
         // custom title bar
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_main);
@@ -50,6 +55,7 @@ public class MainActivity extends Activity {
                     .commit();
         }
 */
+
     }
 
 
@@ -61,15 +67,31 @@ public class MainActivity extends Activity {
      */
     public static class ImagesFragment extends Fragment {
 
+        int test = 0;
         ListView listView;
         private ListAdapter adpt;
         Vibrator v;
         TextView totalMatters;
         private static final String url = "https://app.goclio.com/api/v2/matters";
 //        Activity context = getActivity();
+        ArrayList<Matters> result;
         MattersParser parser = new MattersParser();
 
         public ImagesFragment() {
+        }
+
+        // this method is only called once for this fragment
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            if(test == 0) {
+                // Exec async load task
+                (new AsyncListViewLoader()).execute(url);
+            }
+            test = 1;
+
+            setRetainInstance(true);
         }
 
         @Override
@@ -79,15 +101,17 @@ public class MainActivity extends Activity {
             View view = inflater.inflate(R.layout.fragment_main,
                     container, false);
 
-      //      totalMatters = (TextView)((getActivity())).findViewById(R.id.totalNumber);
-        //    totalMatters.setText("2");
-
             v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
 
             // Get ListView object from xml
             listView = (ListView) view.findViewById(R.id.list);
 
-            adpt  = new ListAdapter(new ArrayList<Matters>(), getActivity());
+            //////////////////////////////////////////////
+            if(result.size() == 0) {
+                adpt  = new ListAdapter(new ArrayList<Matters>(), getActivity());
+            }
+
+
             listView.setAdapter(adpt);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -108,9 +132,7 @@ public class MainActivity extends Activity {
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-
-            // Exec async load task
-            (new AsyncListViewLoader()).execute(url);
+            parser.totalMatters(getActivity(), result.size());
         }
 
         // button that sends the user to the Matter Details
@@ -171,7 +193,7 @@ public class MainActivity extends Activity {
 
             @Override
             protected List<Matters> doInBackground(String... params) {
-                List<Matters> result = new ArrayList<Matters>();
+                result = new ArrayList<Matters>();
 
                 String matterData = "";
 
@@ -212,22 +234,5 @@ public class MainActivity extends Activity {
                 return null;
             }
         }
-
     }
-    /**
-     * A placeholder fragment containing a simple view.
-     */
- /*   public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
-*/
 }

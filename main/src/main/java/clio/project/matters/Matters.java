@@ -1,8 +1,6 @@
 package clio.project.matters;
 
-import java.io.Serializable;
-
-public class Matters implements Serializable {
+public class Matters {
 
     private String displayName;
     private String clientName;
