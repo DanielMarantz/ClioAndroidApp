@@ -35,26 +35,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
- /*       setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            ImagesFragment fragmentDemo = (ImagesFragment)
-                    getFragmentManager().findFragmentById(R.id.listFragment);
-        }
-*/
         // custom title bar
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.customtitlebar);
-
-        /*
-        if(savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.listFragment, new ImagesFragment())
-                    .commit();
-        }
-*/
 
     }
 
@@ -65,19 +51,17 @@ public class MainActivity extends Activity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class ImagesFragment extends Fragment {
+    public static class MattersFragment extends Fragment {
 
-        int test = 0;
-        ListView listView;
+        private int test = 0;
+        private ListView listView;
         private ListAdapter adpt;
-        Vibrator v;
-        TextView totalMatters;
+        private Vibrator v;
         private static final String url = "https://app.goclio.com/api/v2/matters";
-//        Activity context = getActivity();
-        ArrayList<Matters> result;
-        MattersParser parser = new MattersParser();
+        private ArrayList<Matters> result;
+        private MattersParser parser = new MattersParser();
 
-        public ImagesFragment() {
+        public MattersFragment() {
         }
 
         // this method is only called once for this fragment
