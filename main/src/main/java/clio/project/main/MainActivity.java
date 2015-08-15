@@ -53,12 +53,11 @@ public class MainActivity extends Activity {
      */
     public static class MattersFragment extends Fragment {
 
-        private int test = 0;
         private ListView listView;
         private ListAdapter adpt;
         private Vibrator v;
         private static final String url = "https://app.goclio.com/api/v2/matters";
-        private ArrayList<Matters> result;
+        private ArrayList<Matters> result = new ArrayList<Matters>();
         private MattersParser parser = new MattersParser();
 
         public MattersFragment() {
@@ -69,11 +68,12 @@ public class MainActivity extends Activity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            if(test == 0) {
-                // Exec async load task
-                (new AsyncListViewLoader()).execute(url);
-            }
-            test = 1;
+            v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+            adpt  = new ListAdapter(result, getActivity());
+
+            // Exec async load task
+            (new AsyncListViewLoader()).execute(url);
 
             setRetainInstance(true);
         }
@@ -85,17 +85,8 @@ public class MainActivity extends Activity {
             View view = inflater.inflate(R.layout.fragment_main,
                     container, false);
 
-            v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-
             // Get ListView object from xml
             listView = (ListView) view.findViewById(R.id.list);
-
-            //////////////////////////////////////////////
-            if(result.size() == 0) {
-                adpt  = new ListAdapter(new ArrayList<Matters>(), getActivity());
-            }
-
-
             listView.setAdapter(adpt);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,7 +112,6 @@ public class MainActivity extends Activity {
 
         // button that sends the user to the Matter Details
         public void matterDetails(int position) {
-
             // custom dialog
             final Dialog dialog = new Dialog(getActivity());
             dialog.setContentView(R.layout.matter_details);
