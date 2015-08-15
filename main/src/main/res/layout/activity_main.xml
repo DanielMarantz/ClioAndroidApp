@@ -9,6 +9,6 @@
         android:id="@+id/listFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="clio.project.main.MainActivity$MattersFragment"></fragment>
+        class="clio.project.matters.MattersFragment"></fragment>
 
 </LinearLayout>
