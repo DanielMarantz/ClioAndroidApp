@@ -2,13 +2,16 @@ package clio.project.main;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -29,15 +32,10 @@ import clio.project.matters.MattersParser;
 
 public class MainActivity extends Activity {
 
-    ListView listView;
-    private ListAdapter adpt;
-    Vibrator v;
-    TextView totalMatters;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    //    setContentView(R.layout.activity_main);
+ //       setContentView(R.layout.activity_main);
 
         // custom title bar
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
@@ -45,141 +43,177 @@ public class MainActivity extends Activity {
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.customtitlebar);
 
-        // text of total matters in the custom title bar
-        totalMatters = (TextView) findViewById(R.id.totalNumber);
-
-        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-/*
-        if (savedInstanceState == null) {
+        /*
+        if(savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.listFragment, new ImagesFragment())
                     .commit();
         }
 */
-        adpt  = new ListAdapter(new ArrayList<Matters>(), this);
-        // Get ListView object from xml
-        listView = (ListView) findViewById(R.id.list);
-
-
-        listView.setAdapter(adpt);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-
-                v.vibrate(100);
-                matterDetails(position);
-                Log.d("dataRequest", "Position " + position);
-            }
-
-        });
-
-        // Exec async load task
-        (new AsyncListViewLoader()).execute("https://app.goclio.com/api/v2/matters");
     }
 
-    // button that sends the user to the Matter Details
-    public void matterDetails(int position) {
 
-        // custom dialog
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.matter_details);
-        dialog.setTitle("DETAILS");
 
-        // set the custom dialog components - text, button
-        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
-        displayText.setText(adpt.getItem(position).getDisplayName());
 
-        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
-        clientText.setText(adpt.getItem(position).getClientName());
 
-        TextView descText = (TextView) dialog.findViewById(R.id.description);
-        descText.setText(adpt.getItem(position).getDescription());
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class ImagesFragment extends Fragment {
 
-        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
-        openDateText.setText(adpt.getItem(position).getOpenDate());
+        ListView listView;
+        private ListAdapter adpt;
+        Vibrator v;
+        TextView totalMatters;
+        private static final String url = "https://app.goclio.com/api/v2/matters";
+//        Activity context = getActivity();
+        MattersParser parser = new MattersParser();
 
-        TextView statusText = (TextView) dialog.findViewById(R.id.status);
-        statusText.setText(adpt.getItem(position).getStatus());
-
-        //Close dialog button
-        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
-
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-    }
-
-    private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
-        private final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-
-        @Override
-        protected void onPostExecute(List<Matters> result) {
-            super.onPostExecute(result);
-            adpt.setItemList(result);
-            totalMatters.setText("" + result.size());
-            dialog.dismiss();
-            adpt.notifyDataSetChanged();
+        public ImagesFragment() {
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.setMessage("Downloading Matters...");
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View view = inflater.inflate(R.layout.fragment_main,
+                    container, false);
+
+      //      totalMatters = (TextView)((getActivity())).findViewById(R.id.totalNumber);
+        //    totalMatters.setText("2");
+
+            v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+            // Get ListView object from xml
+            listView = (ListView) view.findViewById(R.id.list);
+
+            adpt  = new ListAdapter(new ArrayList<Matters>(), getActivity());
+            listView.setAdapter(adpt);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, final View view,
+                                        int position, long id) {
+
+                    v.vibrate(100);
+                    matterDetails(position);
+                    Log.d("dataRequest", "Position " + position);
+                }
+            });
+
+            return view;
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            // Exec async load task
+            (new AsyncListViewLoader()).execute(url);
+        }
+
+        // button that sends the user to the Matter Details
+        public void matterDetails(int position) {
+
+            // custom dialog
+            final Dialog dialog = new Dialog(getActivity());
+            dialog.setContentView(R.layout.matter_details);
+            dialog.setTitle("DETAILS");
+
+            // set the custom dialog components - text, button
+            TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
+            displayText.setText(adpt.getItem(position).getDisplayName());
+
+            TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
+            clientText.setText(adpt.getItem(position).getClientName());
+
+            TextView descText = (TextView) dialog.findViewById(R.id.description);
+            descText.setText(adpt.getItem(position).getDescription());
+
+            TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
+            openDateText.setText(adpt.getItem(position).getOpenDate());
+
+            TextView statusText = (TextView) dialog.findViewById(R.id.status);
+            statusText.setText(adpt.getItem(position).getStatus());
+
+            //Close dialog button
+            Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
+
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
             dialog.show();
         }
 
-        @Override
-        protected List<Matters> doInBackground(String... params) {
-            List<Matters> result = new ArrayList<Matters>();
-            MattersParser parser = new MattersParser();
-            String matterData = "";
+        private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
+            private final ProgressDialog dialog = new ProgressDialog(getActivity());
 
-            try {
-                URL u = new URL(params[0]);
+            @Override
+            protected void onPostExecute(List<Matters> result) {
+                super.onPostExecute(result);
+                adpt.setItemList(result);
+                parser.totalMatters(getActivity(), result.size());
+                dialog.dismiss();
+                adpt.notifyDataSetChanged();
+            }
 
-                HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                dialog.setMessage("Downloading Matters...");
+                dialog.show();
+            }
 
-                conn.setRequestProperty ("Authorization", "Bearer Xzd7LAtiZZ6HBBjx0DVRqalqN8yjvXgzY5qaD15a");
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
+            @Override
+            protected List<Matters> doInBackground(String... params) {
+                List<Matters> result = new ArrayList<Matters>();
 
-                conn.connect();
-                InputStream inputStream = conn.getInputStream();
+                String matterData = "";
 
-                // convert inputstream to string
-                if(inputStream != null)
-                    matterData = parser.convertInputStreamToString(inputStream);
-                else
-                    matterData = "Did not work!";
+                try {
+                    URL u = new URL(params[0]);
 
-                JSONObject jsnObject = new JSONObject(matterData);
-                JSONArray jsonArray = jsnObject.getJSONArray("matters");
+                    HttpURLConnection conn = (HttpURLConnection) u.openConnection();
 
-                for (int i=0; i < jsonArray.length(); i++) {
-     //               JSONObject test = jsonArray.getJSONObject(i);
-    //                Log.d("dataRequest", "3" + test.toString());
+                    conn.setRequestProperty ("Authorization", "Bearer Xzd7LAtiZZ6HBBjx0DVRqalqN8yjvXgzY5qaD15a");
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
 
-                    result.add(parser.convertMatter(jsonArray.getJSONObject(i)));
+                    conn.connect();
+                    InputStream inputStream = conn.getInputStream();
+
+                    // convert inputstream to string
+                    if(inputStream != null)
+                        matterData = parser.convertInputStreamToString(inputStream);
+                    else
+                        matterData = "Did not work!";
+
+                    JSONObject jsnObject = new JSONObject(matterData);
+                    JSONArray jsonArray = jsnObject.getJSONArray("matters");
+
+                    for (int i=0; i < jsonArray.length(); i++) {
+                        //               JSONObject test = jsonArray.getJSONObject(i);
+                        //                Log.d("dataRequest", "3" + test.toString());
+
+                        result.add(parser.convertMatter(getActivity(), jsonArray.getJSONObject(i)));
+                    }
+
+                    return result;
                 }
-
-                return result;
+                catch(Throwable t) {
+                    t.printStackTrace();
+                }
+                return null;
             }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            return null;
         }
-    }
 
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
