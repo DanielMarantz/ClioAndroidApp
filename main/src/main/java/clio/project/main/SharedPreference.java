@@ -1,15 +1,16 @@
 package clio.project.main;
 
 /**
- * Created by BUTTHAMMER on 14/08/15.
+ * Created by Daniel Marantz on 14/08/15.
  */
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 public class SharedPreference {
 
-    public static final String PREFS_NAME = "MATTERS_PREFS";
+    public static final String PREFS_NAME = "MATTERS_FILE";
     public static final String PREFS_KEY = "AOP_PREFS_String";
 
     public SharedPreference() {

@@ -1,10 +1,10 @@
 package clio.project.matters;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -25,20 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clio.project.main.ListAdapter;
+import clio.project.main.NetworkState;
 import clio.project.main.R;
 
 /**
- * Created by BUTTHAMMER on 15/08/15.
+ * Created by Daniel Marantz on 15/08/15.
  */
 public class MattersFragment extends Fragment {
 
     private ListView listView;
     private ListAdapter adpt;
     private Vibrator v;
-    private static final String url = "https://app.goclio.com/api/v2/matters";
     private ArrayList<Matters> result = new ArrayList<Matters>();
     private MattersController mController = new MattersController();
-
+    private NetworkState nState = new NetworkState();
+    private static final String url = "https://app.goclio.com/api/v2/matters";
     // this method is only called once for this fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +48,8 @@ public class MattersFragment extends Fragment {
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         adpt  = new ListAdapter(result, getActivity());
 
-        // Exec async load task
-        (new AsyncListViewLoader()).execute(url);
-
+        // Retrieve data from internet
+        sendRequest();
         setRetainInstance(true);
     }
 
@@ -71,7 +71,6 @@ public class MattersFragment extends Fragment {
 
                 v.vibrate(100);
                 mController.matterDetails(position, getActivity(), adpt);
-    //            matterDetails(position);
                 Log.d("dataRequest", "Position " + position);
             }
         });
@@ -85,7 +84,57 @@ public class MattersFragment extends Fragment {
         mController.totalMatters(getActivity(), result.size());
     }
 
+    public void sendRequest() {
+        //Connection is good - send request
+        if(nState.isInternet(getActivity())) {
+            // Exec async load task
+            (new AsyncListViewLoader()).execute(url);
+        }
+        else {
+            mController.lockScreenOrientation(getActivity());
+            displayAlert();
+        }
+    }
 
+    public void displayAlert() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getActivity());
+
+        // set title
+        alertDialogBuilder.setTitle("No Saved Data Or Network Connection");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Need network connection to retrieve initial data!")
+                .setCancelable(false)
+                .setPositiveButton("Exit",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        getActivity().finish();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+/*
+    private void lockScreenOrientation() {
+        int currentOrientation = getResources().getConfiguration().orientation;
+
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT)
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private void unlockScreenOrientation() {
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+    }
+*/
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
 
         private final ProgressDialog dialog = new ProgressDialog(getActivity());
@@ -95,7 +144,7 @@ public class MattersFragment extends Fragment {
             super.onPostExecute(result);
             adpt.setItemList(result);
             mController.totalMatters(getActivity(), result.size());
-            unlockScreenOrientation();
+            mController.unlockScreenOrientation(getActivity());
             dialog.dismiss();
             adpt.notifyDataSetChanged();
         }
@@ -103,22 +152,9 @@ public class MattersFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            lockScreenOrientation();
+            mController.lockScreenOrientation(getActivity());
             dialog.setMessage("Downloading Matters. Hang Tight...");
             dialog.show();
-        }
-
-        private void lockScreenOrientation() {
-            int currentOrientation = getResources().getConfiguration().orientation;
-
-            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT)
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            else
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-
-        private void unlockScreenOrientation() {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
 
         @Override

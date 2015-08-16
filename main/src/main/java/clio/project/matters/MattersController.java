@@ -3,6 +3,8 @@ package clio.project.matters;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,8 +24,6 @@ import clio.project.main.SharedPreference;
 
 public class MattersController {
 
-    public static final String PREFS_NAME = "<MATTERS_PREFS";
-    public static final String PREFS_KEY = "AOP_PREFS_String";
     public SharedPreference mattersDatabase = new SharedPreference();
 
     public String convertInputStreamToString(InputStream inputStream) throws IOException {
@@ -54,7 +54,7 @@ public class MattersController {
         //         Log.d("3dataRequest", openDate);
         //         Log.d("4dataRequest", status);
 
-        //       saveMatter(context, obj);
+        saveMatter(context, obj);
 
         return new Matters(displayName, clientName, description, openDate, status);
     }
@@ -104,5 +104,18 @@ public class MattersController {
         });
 
         dialog.show();
+    }
+
+    public void lockScreenOrientation(Context context) {
+        int currentOrientation = context.getResources().getConfiguration().orientation;
+
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT)
+            ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    public void unlockScreenOrientation(Context context) {
+        ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }
