@@ -1,10 +1,8 @@
 package clio.project.matters;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -97,53 +95,8 @@ public class MattersFragment extends Fragment {
         }
         else {
             mController.lockScreenOrientation(getActivity());
-            displayAlert();
+            mController.displayAlert(getActivity());
         }
-    }
-
-    // Given a String in JSON format convert it to a list of Matters
-/*    public ArrayList<Matters> populateList(String matterData) {
-        ArrayList<Matters> prefList = new ArrayList<Matters>();
-
-        try {
-            JSONObject jsnObject = new JSONObject(matterData);
-            JSONArray jsonArray = jsnObject.getJSONArray("matters");
-
-            for (int i=0; i < jsonArray.length(); i++)
-                prefList.add(mController.convertMatter(getActivity(), jsonArray.getJSONObject(i)));
-
-            return prefList;
-        }
-        catch(Throwable t) {
-            t.printStackTrace();
-        }
-        return null;
-    }
-*/
-    public void displayAlert() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                getActivity());
-
-        // set title
-        alertDialogBuilder.setTitle("No Saved Data Or Network Connection");
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("Need network connection to retrieve initial data!")
-                .setCancelable(false)
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, close
-                        // current activity
-                        getActivity().finish();
-                    }
-                });
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
     }
 
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {

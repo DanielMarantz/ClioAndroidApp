@@ -1,8 +1,10 @@
 package clio.project.matters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.util.Log;
@@ -128,6 +130,32 @@ public class MattersController {
         });
 
         dialog.show();
+    }
+
+    public void displayAlert(final Context context) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+
+        // set title
+        alertDialogBuilder.setTitle("No Saved Data Or Network Connection");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Need network connection to retrieve initial data!")
+                .setCancelable(false)
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        ((Activity)(context)).finish();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
     public void lockScreenOrientation(Context context) {
