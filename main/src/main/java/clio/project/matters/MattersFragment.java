@@ -14,18 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import android.widget.Toast;
 
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import clio.project.main.ListAdapter;
-import clio.project.main.NetworkState;
+import clio.project.main.Network;
 import clio.project.main.R;
 
 /**
@@ -38,8 +34,9 @@ public class MattersFragment extends Fragment {
     private Vibrator v;
     private ArrayList<Matters> result = new ArrayList<Matters>();
     private MattersController mController = new MattersController();
-    private NetworkState nState = new NetworkState();
+    private Network network = new Network();
     private static final String url = "https://app.goclio.com/api/v2/matters";
+
     // this method is only called once for this fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +45,7 @@ public class MattersFragment extends Fragment {
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         adpt  = new ListAdapter(result, getActivity());
 
-        // Retrieve data from internet
+        // Retrieve data from internet || shared preferences || Exits
         sendRequest();
         setRetainInstance(true);
     }
@@ -81,14 +78,22 @@ public class MattersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mController.totalMatters(getActivity(), result.size());
+        mController.setTotalMatters(getActivity(), result.size());
     }
 
     public void sendRequest() {
+        String restoredData;
         //Connection is good - send request
-        if(nState.isInternet(getActivity())) {
+        if(network.isInternet(getActivity())) {
             // Exec async load task
             (new AsyncListViewLoader()).execute(url);
+        } else if(mController.restoreMatter(getActivity()) != null) {
+            // Restores the data from Shared Preferencs
+            Toast.makeText(getActivity(), "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
+            restoredData = mController.restoreMatter(getActivity());
+            result = mController.populateList(restoredData, getActivity());
+            adpt.setItemList(result);
+            adpt.notifyDataSetChanged();
         }
         else {
             mController.lockScreenOrientation(getActivity());
@@ -96,6 +101,25 @@ public class MattersFragment extends Fragment {
         }
     }
 
+    // Given a String in JSON format convert it to a list of Matters
+/*    public ArrayList<Matters> populateList(String matterData) {
+        ArrayList<Matters> prefList = new ArrayList<Matters>();
+
+        try {
+            JSONObject jsnObject = new JSONObject(matterData);
+            JSONArray jsonArray = jsnObject.getJSONArray("matters");
+
+            for (int i=0; i < jsonArray.length(); i++)
+                prefList.add(mController.convertMatter(getActivity(), jsonArray.getJSONObject(i)));
+
+            return prefList;
+        }
+        catch(Throwable t) {
+            t.printStackTrace();
+        }
+        return null;
+    }
+*/
     public void displayAlert() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
@@ -107,8 +131,8 @@ public class MattersFragment extends Fragment {
         alertDialogBuilder
                 .setMessage("Need network connection to retrieve initial data!")
                 .setCancelable(false)
-                .setPositiveButton("Exit",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, close
                         // current activity
                         getActivity().finish();
@@ -121,20 +145,7 @@ public class MattersFragment extends Fragment {
         // show it
         alertDialog.show();
     }
-/*
-    private void lockScreenOrientation() {
-        int currentOrientation = getResources().getConfiguration().orientation;
 
-        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT)
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        else
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    }
-
-    private void unlockScreenOrientation() {
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-    }
-*/
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
 
         private final ProgressDialog dialog = new ProgressDialog(getActivity());
@@ -143,7 +154,7 @@ public class MattersFragment extends Fragment {
         protected void onPostExecute(List<Matters> result) {
             super.onPostExecute(result);
             adpt.setItemList(result);
-            mController.totalMatters(getActivity(), result.size());
+            mController.setTotalMatters(getActivity(), result.size());
             mController.unlockScreenOrientation(getActivity());
             dialog.dismiss();
             adpt.notifyDataSetChanged();
@@ -163,29 +174,17 @@ public class MattersFragment extends Fragment {
             result = new ArrayList<Matters>();
 
             try {
-                URL u = new URL(params[0]);
-
-                HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-
-                conn.setRequestProperty ("Authorization", "Bearer Xzd7LAtiZZ6HBBjx0DVRqalqN8yjvXgzY5qaD15a");
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.connect();
-
-                InputStream inputStream = conn.getInputStream();
+                InputStream inputStream = network.connect(params);
 
                 // convert inputstream to string
-                if(inputStream != null)
-                    matterData = mController.convertInputStreamToString(inputStream);
+                if(inputStream != null) {
+                    matterData = mController.convertInputStreamToString(inputStream, getActivity());
+                    Log.d("restore5", matterData);
+                }
                 else
                     matterData = "Did not work!";
 
-                JSONObject jsnObject = new JSONObject(matterData);
-                JSONArray jsonArray = jsnObject.getJSONArray("matters");
-
-                for (int i=0; i < jsonArray.length(); i++)
-                    result.add(mController.convertMatter(getActivity(), jsonArray.getJSONObject(i)));
+                result = mController.populateList(matterData, getActivity());
 
                 return result;
             }

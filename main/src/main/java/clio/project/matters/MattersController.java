@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import clio.project.main.ListAdapter;
 import clio.project.main.R;
@@ -26,12 +28,15 @@ public class MattersController {
 
     public SharedPreference mattersDatabase = new SharedPreference();
 
-    public String convertInputStreamToString(InputStream inputStream) throws IOException {
+    public String convertInputStreamToString(InputStream inputStream, Context context) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
         while((line = bufferedReader.readLine()) != null)
             result += line;
+
+        // Save JSON String in Shared Preferences
+        mattersDatabase.save(context, result);
 
         inputStream.close();
         return result;
@@ -46,25 +51,43 @@ public class MattersController {
         String openDate = obj.getString("open_date");
         String status = obj.getString("status");
 
-
-
         Log.d("dataRequest", obj.getString("practice_area")); // TESSSSSSTTTTTTT
         //         Log.d("1dataRequest", clientName);
         //         Log.d("2dataRequest", description);
         //         Log.d("3dataRequest", openDate);
         //         Log.d("4dataRequest", status);
 
-        saveMatter(context, obj);
-
         return new Matters(displayName, clientName, description, openDate, status);
     }
 
-    public void saveMatter(Context context, JSONObject jsonObject) {
-        mattersDatabase.save(context,jsonObject.toString());
+    // Given a String in JSON format convert it to a list of Matters
+    public ArrayList<Matters> populateList(String matterData, Context context) {
+        ArrayList<Matters> prefList = new ArrayList<Matters>();
+
+        try {
+            JSONObject jsnObject = new JSONObject(matterData);
+            JSONArray jsonArray = jsnObject.getJSONArray("matters");
+
+            for (int i=0; i < jsonArray.length(); i++)
+                prefList.add(convertMatter(context, jsonArray.getJSONObject(i)));
+
+            return prefList;
+        }
+        catch(Throwable t) {
+            t.printStackTrace();
+        }
+        return null;
+    }
+
+    public String restoreMatter(Context context) {
+        if(mattersDatabase.isData(context))
+            return mattersDatabase.getValue(context);
+
+        return null;
     }
 
     // text of total matters in the custom title bar
-    public void totalMatters(Context context, int total) {
+    public void setTotalMatters(Context context, int total) {
         TextView totalMatters = (TextView)((Activity)(context)).findViewById(R.id.totalNumber);
         totalMatters.setText("" + total);
     }
@@ -76,6 +99,7 @@ public class MattersController {
 
         dialog.setContentView(R.layout.matter_details);
         dialog.setTitle("DETAILS");
+        dialog.setCancelable(false);
 
         // set the custom dialog components - text, button
         TextView displayText = (TextView) dialog.findViewById(R.id.displayName);

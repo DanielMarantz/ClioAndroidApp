@@ -7,11 +7,12 @@ package clio.project.main;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 public class SharedPreference {
 
     public static final String PREFS_NAME = "MATTERS_FILE";
-    public static final String PREFS_KEY = "AOP_PREFS_String";
+    public static final String PREFS_KEY = "MATTER_DATA";
 
     public SharedPreference() {
         super();
@@ -21,30 +22,27 @@ public class SharedPreference {
         SharedPreferences settings;
         Editor editor;
 
-        //settings = PreferenceManager.getDefaultSharedPreferences(context);
-        settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE); //1
-        editor = settings.edit(); //2
+        settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        editor = settings.edit();
 
-        editor.putString(PREFS_KEY, text); //3
+        editor.putString(PREFS_KEY, text);
 
-        editor.commit(); //4
+        editor.commit();
     }
 
     public String getValue(Context context) {
         SharedPreferences settings;
-        String text;
+        String restoredText;
 
-        //settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        text = settings.getString(PREFS_KEY, null);
-        return text;
+        restoredText = settings.getString(PREFS_KEY, null);
+        return restoredText;
     }
 
     public void clearSharedPreference(Context context) {
         SharedPreferences settings;
         Editor editor;
 
-        //settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         editor = settings.edit();
 
@@ -61,5 +59,16 @@ public class SharedPreference {
 
         editor.remove(PREFS_KEY);
         editor.commit();
+    }
+
+    public boolean isData(Context context) {
+        SharedPreferences settings;
+        Log.d("restore3", "IsData");
+        settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        if (settings.contains(PREFS_KEY))
+            return true;
+
+        return false;
     }
 }
