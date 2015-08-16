@@ -1,6 +1,5 @@
 package clio.project.matters;
 
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,10 +37,7 @@ public class MattersFragment extends Fragment {
     private Vibrator v;
     private static final String url = "https://app.goclio.com/api/v2/matters";
     private ArrayList<Matters> result = new ArrayList<Matters>();
-    private MattersParser parser = new MattersParser();
-
-    public MattersFragment() {
-    }
+    private MattersController mController = new MattersController();
 
     // this method is only called once for this fragment
     @Override
@@ -51,7 +45,6 @@ public class MattersFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-
         adpt  = new ListAdapter(result, getActivity());
 
         // Exec async load task
@@ -70,7 +63,6 @@ public class MattersFragment extends Fragment {
         // Get ListView object from xml
         listView = (ListView) view.findViewById(R.id.list);
         listView.setAdapter(adpt);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -78,7 +70,8 @@ public class MattersFragment extends Fragment {
                                     int position, long id) {
 
                 v.vibrate(100);
-                matterDetails(position);
+                mController.matterDetails(position, getActivity(), adpt);
+    //            matterDetails(position);
                 Log.d("dataRequest", "Position " + position);
             }
         });
@@ -89,53 +82,19 @@ public class MattersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        parser.totalMatters(getActivity(), result.size());
+        mController.totalMatters(getActivity(), result.size());
     }
 
-    // button that sends the user to the Matter Details
-    public void matterDetails(int position) {
-        // custom dialog
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.matter_details);
-        dialog.setTitle("DETAILS");
-
-        // set the custom dialog components - text, button
-        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
-        displayText.setText(adpt.getItem(position).getDisplayName());
-
-        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
-        clientText.setText(adpt.getItem(position).getClientName());
-
-        TextView descText = (TextView) dialog.findViewById(R.id.description);
-        descText.setText(adpt.getItem(position).getDescription());
-
-        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
-        openDateText.setText(adpt.getItem(position).getOpenDate());
-
-        TextView statusText = (TextView) dialog.findViewById(R.id.status);
-        statusText.setText(adpt.getItem(position).getStatus());
-
-        //Close dialog button
-        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
-
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-    }
 
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
+
         private final ProgressDialog dialog = new ProgressDialog(getActivity());
 
         @Override
         protected void onPostExecute(List<Matters> result) {
             super.onPostExecute(result);
             adpt.setItemList(result);
-            parser.totalMatters(getActivity(), result.size());
+            mController.totalMatters(getActivity(), result.size());
             unlockScreenOrientation();
             dialog.dismiss();
             adpt.notifyDataSetChanged();
@@ -145,17 +104,17 @@ public class MattersFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             lockScreenOrientation();
-            dialog.setMessage("Downloading Matters...");
+            dialog.setMessage("Downloading Matters. Hang Tight...");
             dialog.show();
         }
 
         private void lockScreenOrientation() {
             int currentOrientation = getResources().getConfiguration().orientation;
-            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT)
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            } else {
+            else
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
         }
 
         private void unlockScreenOrientation() {
@@ -164,9 +123,8 @@ public class MattersFragment extends Fragment {
 
         @Override
         protected List<Matters> doInBackground(String... params) {
-            result = new ArrayList<Matters>();
-
             String matterData = "";
+            result = new ArrayList<Matters>();
 
             try {
                 URL u = new URL(params[0]);
@@ -177,25 +135,21 @@ public class MattersFragment extends Fragment {
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Accept", "application/json");
-
                 conn.connect();
+
                 InputStream inputStream = conn.getInputStream();
 
                 // convert inputstream to string
                 if(inputStream != null)
-                    matterData = parser.convertInputStreamToString(inputStream);
+                    matterData = mController.convertInputStreamToString(inputStream);
                 else
                     matterData = "Did not work!";
 
                 JSONObject jsnObject = new JSONObject(matterData);
                 JSONArray jsonArray = jsnObject.getJSONArray("matters");
 
-                for (int i=0; i < jsonArray.length(); i++) {
-                    //               JSONObject test = jsonArray.getJSONObject(i);
-                    //                Log.d("dataRequest", "3" + test.toString());
-
-                    result.add(parser.convertMatter(getActivity(), jsonArray.getJSONObject(i)));
-                }
+                for (int i=0; i < jsonArray.length(); i++)
+                    result.add(mController.convertMatter(getActivity(), jsonArray.getJSONObject(i)));
 
                 return result;
             }

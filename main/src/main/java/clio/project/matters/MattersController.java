@@ -1,8 +1,11 @@
 package clio.project.matters;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -13,13 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import clio.project.main.ListAdapter;
 import clio.project.main.R;
 import clio.project.main.SharedPreference;
 
-/**
- * Created by BUTTHAMMER on 12/08/15.
- */
-public class MattersParser {
+public class MattersController {
 
     public static final String PREFS_NAME = "<MATTERS_PREFS";
     public static final String PREFS_KEY = "AOP_PREFS_String";
@@ -47,13 +48,13 @@ public class MattersParser {
 
 
 
-                 Log.d("dataRequest", obj.getString("practice_area")); // TESSSSSSTTTTTTT
+        Log.d("dataRequest", obj.getString("practice_area")); // TESSSSSSTTTTTTT
         //         Log.d("1dataRequest", clientName);
         //         Log.d("2dataRequest", description);
         //         Log.d("3dataRequest", openDate);
         //         Log.d("4dataRequest", status);
 
- //       saveMatter(context, obj);
+        //       saveMatter(context, obj);
 
         return new Matters(displayName, clientName, description, openDate, status);
     }
@@ -68,4 +69,40 @@ public class MattersParser {
         totalMatters.setText("" + total);
     }
 
+    // button that sends the user to the Matter Details
+    public void matterDetails(int position, Context context, ListAdapter adpt) {
+        // custom dialog
+        final Dialog dialog = new Dialog(context);
+
+        dialog.setContentView(R.layout.matter_details);
+        dialog.setTitle("DETAILS");
+
+        // set the custom dialog components - text, button
+        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
+        displayText.setText(adpt.getItem(position).getDisplayName());
+
+        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
+        clientText.setText(adpt.getItem(position).getClientName());
+
+        TextView descText = (TextView) dialog.findViewById(R.id.description);
+        descText.setText(adpt.getItem(position).getDescription());
+
+        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
+        openDateText.setText(adpt.getItem(position).getOpenDate());
+
+        TextView statusText = (TextView) dialog.findViewById(R.id.status);
+        statusText.setText(adpt.getItem(position).getStatus());
+
+        //Close dialog button
+        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
 }
