@@ -5,7 +5,7 @@
     <!-- Custom theme. -->
     </style>
     <style name="CustomTitleBarTheme" parent="android:Theme">
-        <item name="android:windowTitleSize">65dp</item>
+        <item name="android:windowTitleSize">55dp</item>
         <item name="android:windowTitleBackgroundStyle">@style/titleBarBackgroundStyle</item>
 
     </style>

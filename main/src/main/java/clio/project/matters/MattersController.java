@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -99,8 +100,10 @@ public class MattersController {
         // custom dialog
         final Dialog dialog = new Dialog(context);
 
+        dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
         dialog.setContentView(R.layout.matter_details);
         dialog.setTitle("DETAILS");
+        dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.clio_logo);
         dialog.setCancelable(false);
 
         // set the custom dialog components - text, button
