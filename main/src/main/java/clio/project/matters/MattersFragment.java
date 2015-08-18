@@ -12,11 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import clio.project.main.ListAdapter;
-import clio.project.main.Network;
 import clio.project.main.R;
 
 /**
@@ -27,7 +28,7 @@ import clio.project.main.R;
  */
 public class MattersFragment extends Fragment {
 
-    private Context context;
+    private static Context context;
     private static final String url = "https://app.goclio.com/api/v2/matters";
 
     private Vibrator v;
@@ -36,7 +37,6 @@ public class MattersFragment extends Fragment {
 
     private ArrayList<Matters> result = new ArrayList<Matters>();
     private MattersController mController = new MattersController();
-    private Network network = new Network();
 
     /**
      * Called when the fragment is first created.
@@ -86,7 +86,6 @@ public class MattersFragment extends Fragment {
                 mController.matterDetails(position, adpt, context);
             }
         });
-
         return view;
     }
 
@@ -99,24 +98,25 @@ public class MattersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mController.setTotalMatters(result.size(), context);
+        // Since the Custom title bar is not part of the fragment
+        // to update the total it needs the new activity
+        mController.setTotalMatters(adpt.getCount(), getActivity());
     }
 
     /**
      * Retrieves data depending on connectivity or displays network/no data
      * alert.
      */
-    public void sendRequest() {
-        String restoredData;
+    private void sendRequest() {
+        // Restores the data from Shared Preferencs
+        String restoredData = mController.restoreMatter(context);
         // Connection is good - send request
-        if(network.isInternet(context)) {
+        if(mController.checkNetwork(context)) {
             // Exec async load task
             (new AsyncListViewLoader()).execute(url);
             // Data available retrieve from device
-        } else if(mController.restoreMatter(context) != null) {
+        } else if(restoredData != null) {
             Toast.makeText(context, "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
-            // Restores the data from Shared Preferencs
-            restoredData = mController.restoreMatter(context);
             result = mController.populateList(restoredData);
             // Updates listview
             adpt.setItemList(result);
@@ -139,16 +139,16 @@ public class MattersFragment extends Fragment {
         /**
          * After AsyncTask has completed.
          *
-         * @param result List of Matters.
+         * @param response List of Matters.
          */
         @Override
-        protected void onPostExecute(List<Matters> result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(List<Matters> response) {
+            super.onPostExecute(response);
             // Populates the listview with Matters
-            adpt.setItemList(result);
+            adpt.setItemList(response);
             adpt.notifyDataSetChanged();
 
-            mController.setTotalMatters(result.size(), context);
+            mController.setTotalMatters(adpt.getCount(), context);
             // Unlocks screen regarding activity threads and config change
             mController.unlockScreenOrientation(context);
 
@@ -177,11 +177,10 @@ public class MattersFragment extends Fragment {
         @Override
         protected List<Matters> doInBackground(String... params) {
             String matterData = "";
-            result = new ArrayList<Matters>();
+            // Response from the server(JSON)
+            InputStream inputStream = mController.serverResponse(params);
 
             try {
-                // Response from the server(JSON)
-                InputStream inputStream = network.connect(params);
                 // Convert input stream(JSON) to String
                 if(inputStream != null)
                     matterData = mController.convertInputStreamToString(inputStream, context);

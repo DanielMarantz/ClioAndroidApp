@@ -11,15 +11,19 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 import clio.project.main.ListAdapter;
+import clio.project.main.Network;
 import clio.project.main.R;
 import clio.project.main.SharedPreference;
 
@@ -31,6 +35,7 @@ import clio.project.main.SharedPreference;
 public class MattersController {
 
     private SharedPreference mattersDatabase = new SharedPreference();
+    private Network network = new Network();
 
     /**
      * Converts a stream of data to a string. Also persists string data.
@@ -40,7 +45,7 @@ public class MattersController {
      * @return             String of data that has been converted.
      * @throws IOException
      */
-    public String convertInputStreamToString(InputStream inputStream, Context context) throws IOException {
+    protected String convertInputStreamToString(InputStream inputStream, Context context) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
@@ -49,6 +54,7 @@ public class MattersController {
             result += line;
         }
         // Save JSON String in Shared Preferences
+        // Saving it in this method allows the data to be up to date
         mattersDatabase.save(result, context);
         inputStream.close();
 
@@ -62,7 +68,7 @@ public class MattersController {
      * @return               Instantiated Matters object.
      * @throws JSONException
      */
-    public Matters convertMatter(JSONObject obj) throws JSONException {
+    protected Matters convertMatter(JSONObject obj) throws JSONException {
         // Nested data in JSON object
         JSONObject nestedObj = (JSONObject)obj.get("client");
 
@@ -81,7 +87,7 @@ public class MattersController {
      * @param matterData JSON data.
      * @return           List of Matters.
      */
-    public ArrayList<Matters> populateList(String matterData)  {
+    protected ArrayList<Matters> populateList(String matterData)  {
         ArrayList<Matters> prefList = new ArrayList<Matters>();
 
         try {
@@ -105,11 +111,34 @@ public class MattersController {
      * @param context The context of a Activity.
      * @return        The restored data.
      */
-    public String restoreMatter(Context context) {
+    protected String restoreMatter(Context context) {
         if(mattersDatabase.isData(context)) {
             return mattersDatabase.getValue(context);
         }
         return null;
+    }
+
+    /**
+     * Checks the device for network connectivity
+     *
+     * @param context The context of a Activity.
+     * @return        State of internet connection
+     */
+    protected boolean checkNetwork(Context context) {
+        if(network.isInternet(context)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handles the server response.
+     *
+     * @param params The url to send and receive.
+     * @return       Response of the request.
+     */
+    protected InputStream serverResponse(String... params) {
+        return network.connect(params);
     }
 
     /**
@@ -118,7 +147,7 @@ public class MattersController {
      * @param total   The total of Matters.
      * @param context The context of a Activity.
      */
-    public void setTotalMatters(int total, Context context) {
+    protected void setTotalMatters(int total, Context context) {
         TextView totalMatters = (TextView)((Activity)(context)).findViewById(R.id.totalNumber);
         totalMatters.setText("" + total);
     }
@@ -130,7 +159,7 @@ public class MattersController {
      * @param adpt     The custom list adapter reference.
      * @param context  The context of a Activity.
      */
-    public void matterDetails(int position, ListAdapter adpt, Context context) {
+    protected void matterDetails(int position, ListAdapter adpt, Context context) {
         final Dialog dialog = new Dialog(context);
 
         dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
@@ -171,7 +200,7 @@ public class MattersController {
      *
      * @param context The context of a Activity.
      */
-    public void displayAlert(final Context context) {
+    protected void displayAlert(final Context context) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 

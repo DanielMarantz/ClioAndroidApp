@@ -18,7 +18,7 @@ import clio.project.matters.Matters;
 public class ListAdapter extends ArrayAdapter<Matters> {
 
     private List<Matters> itemList;
-    private Context context;
+    private static Context context;
 
     /**
      * Constructor to initialize the listview data.
