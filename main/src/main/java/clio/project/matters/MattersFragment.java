@@ -29,6 +29,7 @@ import clio.project.main.R;
  */
 public class MattersFragment extends Fragment {
 
+    private Context context;
     private ListView listView;
     private ListAdapter adpt;
     private Vibrator v;
@@ -46,11 +47,11 @@ public class MattersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // Getting application context
+        context = getActivity();
         // Instantiating components
-        v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        adpt  = new ListAdapter(result, getActivity());
-
+        v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        adpt  = new ListAdapter(result, context);
         // Retrieve data from internet || shared preferences || Exits
         sendRequest();
         // Setting only one creation for this fragment in the activity
@@ -69,11 +70,9 @@ public class MattersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // View of the XML layout
         View view = inflater.inflate(R.layout.fragment_main,
                 container, false);
-
         // Get ListView object from xml
         listView = (ListView) view.findViewById(R.id.list);
         listView.setAdapter(adpt);
@@ -82,10 +81,9 @@ public class MattersFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-
                 v.vibrate(100);
                 // Displays Matter details in a dialog
-                mController.matterDetails(position, adpt, getActivity());
+                mController.matterDetails(position, adpt, context);
             }
         });
 
@@ -101,7 +99,7 @@ public class MattersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mController.setTotalMatters(result.size(), getActivity());
+        mController.setTotalMatters(result.size(), context);
     }
 
     /**
@@ -112,14 +110,14 @@ public class MattersFragment extends Fragment {
         String restoredData;
 
         // Connection is good - send request
-        if(network.isInternet(getActivity())) {
+        if(network.isInternet(context)) {
             // Exec async load task
             (new AsyncListViewLoader()).execute(url);
             // Data available retrieve from device
-        } else if(mController.restoreMatter(getActivity()) != null) {
-            Toast.makeText(getActivity(), "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
+        } else if(mController.restoreMatter(context) != null) {
+            Toast.makeText(context, "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
             // Restores the data from Shared Preferencs
-            restoredData = mController.restoreMatter(getActivity());
+            restoredData = mController.restoreMatter(context);
             result = mController.populateList(restoredData);
             // Updates listview
             adpt.setItemList(result);
@@ -127,8 +125,8 @@ public class MattersFragment extends Fragment {
         }
         else {
             // Lock the screen and display alert
-            mController.lockScreenOrientation(getActivity());
-            mController.displayAlert(getActivity());
+            mController.lockScreenOrientation(context);
+            mController.displayAlert(context);
         }
     }
 
@@ -137,7 +135,7 @@ public class MattersFragment extends Fragment {
      */
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
 
-        private final ProgressDialog dialog = new ProgressDialog(getActivity());
+        private final ProgressDialog dialog = new ProgressDialog(context);
 
         /**
          * After AsyncTask has completed.
@@ -151,9 +149,9 @@ public class MattersFragment extends Fragment {
             adpt.setItemList(result);
             adpt.notifyDataSetChanged();
 
-            mController.setTotalMatters(result.size(), getActivity());
+            mController.setTotalMatters(result.size(), context);
             // Unlocks screen regarding activity threads and config change
-            mController.unlockScreenOrientation(getActivity());
+            mController.unlockScreenOrientation(context);
 
             dialog.dismiss();
         }
@@ -165,7 +163,7 @@ public class MattersFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             // locks screen regarding activity threads and config change
-            mController.lockScreenOrientation(getActivity());
+            mController.lockScreenOrientation(context);
 
             dialog.setMessage("Downloading Matters. Hang Tight...");
             dialog.show();
@@ -185,13 +183,11 @@ public class MattersFragment extends Fragment {
             try {
                 // Response from the server(JSON)
                 InputStream inputStream = network.connect(params);
-
                 // Convert input stream(JSON) to String
                 if(inputStream != null)
-                    matterData = mController.convertInputStreamToString(inputStream, getActivity());
+                    matterData = mController.convertInputStreamToString(inputStream, context);
                 else
                     matterData = "No Data!";
-
                 // Convert String to a list of Matters
                 result = mController.populateList(matterData);
 

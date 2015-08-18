@@ -26,9 +26,7 @@ public class SharedPreference {
 
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         editor = settings.edit();
-
         editor.putString(PREFS_KEY, text);
-
         editor.commit();
     }
 
@@ -44,6 +42,7 @@ public class SharedPreference {
 
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         restoredText = settings.getString(PREFS_KEY, null);
+
         return restoredText;
     }
 
@@ -58,7 +57,6 @@ public class SharedPreference {
 
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         editor = settings.edit();
-
         editor.clear();
         editor.commit();
     }
@@ -74,7 +72,6 @@ public class SharedPreference {
 
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         editor = settings.edit();
-
         editor.remove(PREFS_KEY);
         editor.commit();
     }
@@ -90,9 +87,9 @@ public class SharedPreference {
 
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-        if (settings.contains(PREFS_KEY))
+        if (settings.contains(PREFS_KEY)) {
             return true;
-
+        }
         return false;
     }
 }

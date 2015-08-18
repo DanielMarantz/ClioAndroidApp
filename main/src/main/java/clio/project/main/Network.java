@@ -25,7 +25,6 @@ public class Network {
      * @return        A boolean of the network state.
      */
     public boolean isInternet(Context context) {
-
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -33,8 +32,9 @@ public class Network {
         networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         isMobileConn = networkInfo.isConnected();
 
-        if(isWifiConn || isMobileConn)
+        if(isWifiConn || isMobileConn) {
             return true;
+        }
 
         return false;
     }

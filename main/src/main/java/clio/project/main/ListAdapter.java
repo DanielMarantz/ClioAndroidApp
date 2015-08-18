@@ -38,8 +38,9 @@ public class ListAdapter extends ArrayAdapter<Matters> {
      * @return The total of the list.
      */
     public int getCount() {
-        if (itemList != null)
+        if (itemList != null) {
             return itemList.size();
+        }
         return 0;
     }
 
@@ -50,8 +51,9 @@ public class ListAdapter extends ArrayAdapter<Matters> {
      * @return         Matters object.
      */
     public Matters getItem(int position) {
-        if (itemList != null)
+        if (itemList != null) {
             return itemList.get(position);
+        }
         return null;
     }
 
@@ -62,8 +64,9 @@ public class ListAdapter extends ArrayAdapter<Matters> {
      * @return         Id of a list item.
      */
     public long getItemId(int position) {
-        if (itemList != null)
+        if (itemList != null) {
             return itemList.get(position).hashCode();
+        }
         return 0;
     }
 
@@ -77,15 +80,15 @@ public class ListAdapter extends ArrayAdapter<Matters> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         View v = convertView;
+
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.list_item, null);
         }
-
         // Sets the the given Matter to the listview tab
         Matters m = itemList.get(position);
+
         TextView mainListText1 = (TextView) v.findViewById(R.id.displayName);
         mainListText1.setText(m.getDisplayName());
 

@@ -48,13 +48,13 @@ public class MattersController {
         String line = "";
         String result = "";
 
-        while((line = bufferedReader.readLine()) != null)
+        while((line = bufferedReader.readLine()) != null) {
             result += line;
-
+        }
         // Save JSON String in Shared Preferences
         mattersDatabase.save(result, context);
-
         inputStream.close();
+
         return result;
     }
 
@@ -91,9 +91,9 @@ public class MattersController {
             JSONObject jsnObject = new JSONObject(matterData);
             JSONArray jsonArray = jsnObject.getJSONArray("matters");
 
-            for (int i=0; i < jsonArray.length(); i++)
+            for (int i=0; i < jsonArray.length(); i++) {
                 prefList.add(convertMatter(jsonArray.getJSONObject(i)));
-
+            }
             return prefList;
         }
         catch(Throwable t) {
@@ -109,9 +109,9 @@ public class MattersController {
      * @return        The restored data.
      */
     public String restoreMatter(Context context) {
-        if(mattersDatabase.isData(context))
+        if(mattersDatabase.isData(context)) {
             return mattersDatabase.getValue(context);
-
+        }
         return null;
     }
 
@@ -141,7 +141,6 @@ public class MattersController {
         dialog.setTitle("DETAILS");
         dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.clio_logo);
         dialog.setCancelable(false);
-
         // Set the custom dialog components - text, button
         TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
         displayText.setText(adpt.getItem(position).getDisplayName());
@@ -157,10 +156,8 @@ public class MattersController {
 
         TextView statusText = (TextView) dialog.findViewById(R.id.status);
         statusText.setText(adpt.getItem(position).getStatus());
-
         // Close dialog button
         Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
-
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,7 +179,6 @@ public class MattersController {
                 context);
 
         alertDialogBuilder.setTitle("No Saved Data Or Network Connection");
-
         // Set dialog message
         alertDialogBuilder
                 .setMessage("Need network connection to retrieve initial data!")
@@ -193,10 +189,8 @@ public class MattersController {
                         ((Activity)(context)).finish();
                     }
                 });
-
         // Create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         alertDialog.show();
     }
 
@@ -208,10 +202,11 @@ public class MattersController {
     public void lockScreenOrientation(Context context) {
         int currentOrientation = context.getResources().getConfiguration().orientation;
 
-        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT)
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
             ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        else
+        } else {
             ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
     }
 
     /**

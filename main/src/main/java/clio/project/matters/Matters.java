@@ -24,7 +24,6 @@ public class Matters {
      * @param status      Status of a Matter.
      */
     public Matters(String displayName, String clientName, String description, String openDate, String status) {
-        super();
         this.displayName = displayName;
         this.clientName = clientName;
         this.description = description;
