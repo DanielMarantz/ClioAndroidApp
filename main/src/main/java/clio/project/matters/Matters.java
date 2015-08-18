@@ -15,6 +15,12 @@ public class Matters {
     private String status;
 
     /**
+     * No-Args constructor
+     */
+    public Matters(){
+    }
+
+    /**
      * Constructor of a Matter.
      *
      * @param displayName Display name of a Matter.

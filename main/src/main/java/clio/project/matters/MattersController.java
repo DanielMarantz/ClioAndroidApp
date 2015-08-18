@@ -1,24 +1,22 @@
 package clio.project.matters;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.TextView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import clio.project.main.DialogLoader;
 import clio.project.main.ListAdapter;
 import clio.project.main.Network;
 import clio.project.main.R;
@@ -33,6 +31,8 @@ public class MattersController {
 
     private SharedPreference mattersDatabase = new SharedPreference();
     private Network network = new Network();
+    private MattersParser matterParser = new MattersParser();
+    private DialogLoader dialogLoader = new DialogLoader();
 
     /**
      * Converts a stream of data to a string. Also persists string data.
@@ -59,23 +59,14 @@ public class MattersController {
     }
 
     /**
-     * Converts a JSON object into a Matters object.
+     * Handles JSON to Matters object parsing.
      *
      * @param obj            JSON object to be converted.
      * @return               Instantiated Matters object.
      * @throws JSONException
      */
-    protected Matters convertMatter(JSONObject obj) throws JSONException {
-        // Nested data in JSON object
-        JSONObject nestedObj = (JSONObject)obj.get("client");
-
-        String displayName = obj.getString("display_number");
-        String clientName = nestedObj.getString("name");
-        String description = obj.getString("description");
-        String openDate = obj.getString("open_date");
-        String status = obj.getString("status");
-
-        return new Matters(displayName, clientName, description, openDate, status);
+    protected Matters parseMatter(JSONObject obj) throws JSONException {
+        return matterParser.parse(obj);
     }
 
     /**
@@ -92,7 +83,7 @@ public class MattersController {
             JSONArray jsonArray = jsnObject.getJSONArray("matters");
 
             for (int i=0; i < jsonArray.length(); i++) {
-                prefList.add(convertMatter(jsonArray.getJSONObject(i)));
+                prefList.add(parseMatter(jsonArray.getJSONObject(i)));
             }
             return prefList;
         }
@@ -156,65 +147,17 @@ public class MattersController {
      * @param adpt     The custom list adapter reference.
      * @param context  The context of a Activity.
      */
-    protected void matterDetails(int position, ListAdapter adpt, Context context) {
-        final Dialog dialog = new Dialog(context);
-
-        dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
-        dialog.setContentView(R.layout.matter_details);
-        dialog.setTitle("DETAILS");
-        dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.clio_logo);
-        dialog.setCancelable(false);
-        // Set the custom dialog components - text, button
-        TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
-        displayText.setText(adpt.getItem(position).getDisplayName());
-
-        TextView clientText = (TextView) dialog.findViewById(R.id.clientName);
-        clientText.setText(adpt.getItem(position).getClientName());
-
-        TextView descText = (TextView) dialog.findViewById(R.id.description);
-        descText.setText(adpt.getItem(position).getDescription());
-
-        TextView openDateText = (TextView) dialog.findViewById(R.id.openDate);
-        openDateText.setText(adpt.getItem(position).getOpenDate());
-
-        TextView statusText = (TextView) dialog.findViewById(R.id.status);
-        statusText.setText(adpt.getItem(position).getStatus());
-        // Close dialog button
-        Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
+    protected void displayDetails(int position, ListAdapter adpt, Context context) {
+        dialogLoader.loadDetails(position, adpt, context);
     }
 
     /**
-     * Displays an alert dialog regarding Network && no persisted data.
-     * Click event exits application.
+     * Displays an alert dialog.
      *
      * @param context The context of a Activity.
      */
     protected void displayAlert(final Context context) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                context);
-
-        alertDialogBuilder.setTitle("No Saved Data Or Network Connection");
-        // Set dialog message
-        alertDialogBuilder
-                .setMessage("Need network connection to retrieve initial data!")
-                .setCancelable(false)
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Close current activity
-                        ((Activity)(context)).finish();
-                    }
-                });
-        // Create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        dialogLoader.loadAlert(context);
     }
 
     /**

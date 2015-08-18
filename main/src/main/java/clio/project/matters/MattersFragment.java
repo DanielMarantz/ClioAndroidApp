@@ -81,7 +81,7 @@ public class MattersFragment extends Fragment {
                                     int position, long id) {
                 v.vibrate(100);
                 // Displays Matter details in a dialog
-                mController.matterDetails(position, adpt, context);
+                mController.displayDetails(position, adpt, context);
             }
         });
         return view;
