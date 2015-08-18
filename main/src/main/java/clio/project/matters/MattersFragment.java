@@ -85,7 +85,7 @@ public class MattersFragment extends Fragment {
 
                 v.vibrate(100);
                 // Displays Matter details in a dialog
-                mController.matterDetails(position, getActivity(), adpt);
+                mController.matterDetails(position, adpt, getActivity());
             }
         });
 
@@ -101,7 +101,7 @@ public class MattersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mController.setTotalMatters(getActivity(), result.size());
+        mController.setTotalMatters(result.size(), getActivity());
     }
 
     /**
@@ -120,7 +120,7 @@ public class MattersFragment extends Fragment {
             Toast.makeText(getActivity(), "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
             // Restores the data from Shared Preferencs
             restoredData = mController.restoreMatter(getActivity());
-            result = mController.populateList(restoredData, getActivity());
+            result = mController.populateList(restoredData);
             // Updates listview
             adpt.setItemList(result);
             adpt.notifyDataSetChanged();
@@ -151,7 +151,7 @@ public class MattersFragment extends Fragment {
             adpt.setItemList(result);
             adpt.notifyDataSetChanged();
 
-            mController.setTotalMatters(getActivity(), result.size());
+            mController.setTotalMatters(result.size(), getActivity());
             // Unlocks screen regarding activity threads and config change
             mController.unlockScreenOrientation(getActivity());
 
@@ -193,7 +193,7 @@ public class MattersFragment extends Fragment {
                     matterData = "No Data!";
 
                 // Convert String to a list of Matters
-                result = mController.populateList(matterData, getActivity());
+                result = mController.populateList(matterData);
 
                 return result;
             }

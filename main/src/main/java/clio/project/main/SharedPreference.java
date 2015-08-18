@@ -17,10 +17,10 @@ public class SharedPreference {
     /**
      * Saves String data to a file given a key.
      *
-     * @param context The context of the activity.
      * @param text    String of data to be persisted.
+     * @param context The context of the activity.
      */
-    public void save(Context context, String text) {
+    public void save(String text,  Context context) {
         SharedPreferences settings;
         Editor editor;
 

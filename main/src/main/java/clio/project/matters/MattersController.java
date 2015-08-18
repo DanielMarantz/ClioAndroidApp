@@ -52,7 +52,7 @@ public class MattersController {
             result += line;
 
         // Save JSON String in Shared Preferences
-        mattersDatabase.save(context, result);
+        mattersDatabase.save(result, context);
 
         inputStream.close();
         return result;
@@ -61,12 +61,11 @@ public class MattersController {
     /**
      * Converts a JSON object into a Matters object.
      *
-     * @param context        The context of a Activity.
      * @param obj            JSON object to be converted.
      * @return               Instantiated Matters object.
      * @throws JSONException
      */
-    public Matters convertMatter(Context context, JSONObject obj) throws JSONException {
+    public Matters convertMatter(JSONObject obj) throws JSONException {
         // Nested data in JSON object
         JSONObject nestedObj = (JSONObject)obj.get("client");
 
@@ -83,10 +82,9 @@ public class MattersController {
      * Given a String in JSON format converted to a list of Matters.
      *
      * @param matterData JSON data.
-     * @param context    The context of a Activity.
      * @return           List of Matters.
      */
-    public ArrayList<Matters> populateList(String matterData, Context context)  {
+    public ArrayList<Matters> populateList(String matterData)  {
         ArrayList<Matters> prefList = new ArrayList<Matters>();
 
         try {
@@ -94,7 +92,7 @@ public class MattersController {
             JSONArray jsonArray = jsnObject.getJSONArray("matters");
 
             for (int i=0; i < jsonArray.length(); i++)
-                prefList.add(convertMatter(context, jsonArray.getJSONObject(i)));
+                prefList.add(convertMatter(jsonArray.getJSONObject(i)));
 
             return prefList;
         }
@@ -120,10 +118,10 @@ public class MattersController {
     /**
      * Setter of the total matters in custom title bar.
      *
-     * @param context The context of a Activity.
      * @param total   The total of Matters.
+     * @param context The context of a Activity.
      */
-    public void setTotalMatters(Context context, int total) {
+    public void setTotalMatters(int total, Context context) {
         TextView totalMatters = (TextView)((Activity)(context)).findViewById(R.id.totalNumber);
         totalMatters.setText("" + total);
     }
@@ -132,10 +130,10 @@ public class MattersController {
      * Displays Matter details in a custom dialog.
      *
      * @param position The location of the Matter in the list.
-     * @param context  The context of a Activity.
      * @param adpt     The custom list adapter reference.
+     * @param context  The context of a Activity.
      */
-    public void matterDetails(int position, Context context, ListAdapter adpt) {
+    public void matterDetails(int position, ListAdapter adpt, Context context) {
         final Dialog dialog = new Dialog(context);
 
         dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
