@@ -3,7 +3,6 @@ package clio.project.main;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;

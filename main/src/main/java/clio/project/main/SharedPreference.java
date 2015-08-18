@@ -11,8 +11,8 @@ import android.content.SharedPreferences.Editor;
  */
 public class SharedPreference {
 
-    public static final String PREFS_NAME = "MATTERS_FILE";
-    public static final String PREFS_KEY = "MATTER_DATA";
+    private static final String PREFS_NAME = "MATTERS_FILE";
+    private static final String PREFS_KEY = "MATTER_DATA";
 
     /**
      * Saves String data to a file given a key.

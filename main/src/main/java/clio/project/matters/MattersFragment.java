@@ -12,11 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import clio.project.main.ListAdapter;
 import clio.project.main.Network;
 import clio.project.main.R;
@@ -30,13 +28,15 @@ import clio.project.main.R;
 public class MattersFragment extends Fragment {
 
     private Context context;
-    private ListView listView;
-    private ListAdapter adpt;
+    private static final String url = "https://app.goclio.com/api/v2/matters";
+
     private Vibrator v;
+    private ListAdapter adpt;
+    private ListView listView;
+
     private ArrayList<Matters> result = new ArrayList<Matters>();
     private MattersController mController = new MattersController();
     private Network network = new Network();
-    private static final String url = "https://app.goclio.com/api/v2/matters";
 
     /**
      * Called when the fragment is first created.
@@ -108,7 +108,6 @@ public class MattersFragment extends Fragment {
      */
     public void sendRequest() {
         String restoredData;
-
         // Connection is good - send request
         if(network.isInternet(context)) {
             // Exec async load task
