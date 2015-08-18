@@ -4,77 +4,74 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <!-- 2 columns -->
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:padding="@dimen/tableRowPadding" >
 
         <TextView
             android:id="@+id/textDisplayName"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:textColor="#FFF"
-            android:textSize="17sp"
-            android:text="Display Name: "/>
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentBigText"
+            android:text="@string/displayName"/>
 
         <TextView
             android:id="@+id/displayName"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="4dp"
-            android:textColor="#FFF"
-            android:textSize="14sp"/>
+            android:paddingTop="@dimen/tableContentSmallPadding"
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentSmallText"/>
     </TableRow>
 
-    <!-- edittext span 2 column -->
     <TableRow
         android:id="@+id/tableRow2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:padding="@dimen/tableRowPadding" >
 
         <TextView
             android:id="@+id/textClientName"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:textColor="#FFF"
-            android:textSize="17sp"
-            android:text="Client Name:"/>
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentBigText"
+            android:text="@string/clientName"/>
 
         <TextView
             android:id="@+id/clientName"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="4dp"
-            android:textColor="#FFF"
-            android:textSize="14sp"/>
+            android:paddingTop="@dimen/tableContentSmallPadding"
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentSmallText"/>
 
     </TableRow>
 
-    <!-- 3 columns -->
     <TableRow
         android:id="@+id/tableRow3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:padding="@dimen/tableRowPadding" >
 
         <TextView
             android:id="@+id/textDescription"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:textColor="#FFF"
-            android:textSize="17sp"
-            android:text="Description:"/>
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentBigText"
+            android:text="@string/description"/>
 
         <TextView
             android:id="@+id/description"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="4dp"
-            android:textColor="#FFF"
-            android:textSize="14sp"/>
+            android:paddingTop="@dimen/tableContentSmallPadding"
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentSmallText"/>
 
     </TableRow>
 
@@ -82,23 +79,23 @@
         android:id="@+id/tableRow4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:padding="@dimen/tableRowPadding" >
 
         <TextView
             android:id="@+id/textOpenDate"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:textColor="#FFF"
-            android:textSize="17sp"
-            android:text="Open Date:"/>
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentBigText"
+            android:text="@string/openDate"/>
 
         <TextView
             android:id="@+id/openDate"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="4dp"
-            android:textColor="#FFF"
-            android:textSize="14sp"/>
+            android:paddingTop="@dimen/tableContentSmallPadding"
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentSmallText"/>
 
     </TableRow>
 
@@ -106,23 +103,23 @@
         android:id="@+id/tableRow5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dip" >
+        android:padding="@dimen/tableRowPadding" >
 
         <TextView
             android:id="@+id/textStatus"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:textColor="#FFF"
-            android:textSize="17sp"
-            android:text="Status:"/>
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentBigText"
+            android:text="@string/status"/>
 
         <TextView
             android:id="@+id/status"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="4dp"
-            android:textColor="#FFF"
-            android:textSize="14sp"/>
+            android:paddingTop="@dimen/tableContentSmallPadding"
+            android:textColor="@color/matterDetailsClr"
+            android:textSize="@dimen/tableContentSmallText"/>
 
     </TableRow>
 
@@ -130,8 +127,7 @@
             android:id="@+id/closeDialog"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:background="@drawable/button_selector"
-            android:text=" Close " />
+            android:text="@string/closeBtn" />
 
 </TableLayout>

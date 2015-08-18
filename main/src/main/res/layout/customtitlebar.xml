@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
-        android:padding="10dp"
+        android:padding="@dimen/logoPadding"
         android:src="@drawable/clio_logo"/>
 
     <TextView
@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/clioLogo"
         android:layout_centerInParent="true"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textColor="@color/headerTextClr"
+        android:textSize="@dimen/titleText"
         android:textStyle="bold"
         android:text="@string/title" />
 
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/title"
         android:layout_centerInParent="true"
-        android:padding="7dp"
+        android:padding="@dimen/titleArrowPadding"
         android:src="@drawable/down_arrow"/>
 
     <TextView
@@ -41,8 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/totalNumber"
         android:layout_centerInParent="true"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
+        android:textColor="@color/headerTextClr"
+        android:textSize="@dimen/totalMattersText"
         android:textStyle="bold"
         android:text="@string/totalMatters"/>
     
@@ -52,9 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_alignParentRight="true"
-        android:padding="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
+        android:padding="@dimen/totalNumberPadding"
+        android:textColor="@color/headerTextClr"
+        android:textSize="@dimen/totalNumberText"
         android:textStyle="bold"/>
 
 </RelativeLayout>

@@ -1,13 +1,10 @@
 <resources>
-
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar"></style>
     <!-- Custom theme. -->
-    </style>
     <style name="CustomTitleBarTheme" parent="android:Theme">
         <item name="android:windowTitleSize">55dp</item>
         <item name="android:windowTitleBackgroundStyle">@style/titleBarBackgroundStyle</item>
-
     </style>
     <style name="titleBarBackgroundStyle">
         <item name="android:background">@android:color/transparent</item>

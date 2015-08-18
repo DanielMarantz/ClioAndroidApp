@@ -1,62 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
     <!-- Outside panal of buttons -->
     <item>
         <shape>
-            <solid android:color="#36474e" />
+            <solid android:color="@color/outsidePanelClr" />
 
             <stroke
                 android:width="0dp"
-                android:color="#36474e" />
+                android:color="@color/outsidePanelClr" />
 
             <corners android:radius="0dp" />
 
             <padding
-                android:bottom="6dp"
-                android:left="6dp"
-                android:right="6dp"
-                android:top="6dp" />
+                android:bottom="@dimen/btnOutsidePadding"
+                android:left="@dimen/btnOutsidePadding"
+                android:right="@dimen/btnOutsidePadding"
+                android:top="@dimen/btnOutsidePadding" />
         </shape>
     </item>
-    
     <!-- Button shadow -->
     <item>
         <shape>
-            <solid android:color="#36474e" />
+            <solid android:color="@color/btnShadowClr2" />
 
             <stroke
                 android:width="0dp"
-                android:color="#36474e" />
+                android:color="@color/btnShadowClr2" />
 
-            <corners android:radius="5dp" />
+            <corners android:radius="@dimen/btnShadowRadius" />
 
             <padding
-                android:bottom="4dp"
+                android:bottom="@dimen/btnShadowPadding"
                 android:left="0dp"
                 android:right="0dp"
                 android:top="0dp" />
         </shape>
     </item>
-    
     <!-- Main part of button -->
     <item>
         <shape>
-            <solid android:color="#2cbbe8" />
+            <solid android:color="@color/btnMainClr" />
 
-            <gradient android:angle="90" android:startColor="#2cbbe8" android:endColor="#389CBF" />
+            <gradient android:angle="@integer/gradAngle" android:startColor="@color/btnMainClr" android:endColor="@color/gradientEndClr" />
             
             <stroke
                 android:width="0dp"
-                android:color="#2cbbe8" />
+                android:color="@color/btnMainClr" />
 
-           <corners android:radius="5dp" />
+           <corners android:radius="@dimen/btnRadius" />
 
             <padding
                 android:bottom="0dp"
-                android:left="3dp"
+                android:left="@dimen/btnMainPadding"
                 android:right="0dp"
-                android:top="3dp" />
+                android:top="@dimen/btnMainPadding" />
         </shape>
     </item>
 

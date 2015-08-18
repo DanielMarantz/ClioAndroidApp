@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="borderLow">#36474E</color>
-    <color name="borderHigh">#161C1F</color>
-    
-    <color name="gradientStart">#36474E</color>
-    <color name="gradientEnd">#202B2F</color>
-    
-    <color name="text">#999</color>
-    <color name="shadow">#FFFFFF</color>
+    <!-- Custom button style -->
+    <color name="outsidePanelClr">#36474e</color>
+    <color name="btnShadowClr">#222f33</color>
+    <color name="btnShadowClr2">#36474e</color>
+    <color name="btnMainClr">#2cbbe8</color>
+    <color name="gradientEndClr">#389CBF</color>
+    <!-- Text colours -->
+    <color name="displayNameClr">#D6DCE5</color>
+    <color name="clientNameClr">#a4b3c5</color>
+    <color name="matterDetailsClr">#FFF</color>
+    <color name="headerTextClr">#FFFFFF</color>
+    <!-- Listview item colour -->
+    <color name="listViewClr">#222f33</color>
+
 </resources>

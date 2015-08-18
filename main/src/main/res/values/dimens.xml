@@ -2,16 +2,42 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
     <dimen name="padding">8dp</dimen>
     <dimen name="border">2dp</dimen>
     <dimen name="negborder">-3dp</dimen>
     <dimen name="margin">50dp</dimen>
     <dimen name="text">64sp</dimen>
-
     <item name="gradient_radius" type="integer">500</item>
     <item name="shadowDx" type="integer">2</item>
     <item name="shadowDy" type="integer">2</item>
     <item name="shadowRadius" type="integer">4</item>
+    <!-- Custom title bar -->
+    <dimen name="logoPadding">10dp</dimen>
+    <dimen name="titleArrowPadding">7dp</dimen>
+    <dimen name="titleText">20sp</dimen>
+    <dimen name="totalMattersText">15sp</dimen>
+    <dimen name="totalNumberPadding">10dp</dimen>
+    <dimen name="totalNumberText">15sp</dimen>
+    <!-- Custom buttons -->
+    <dimen name="btnOutsidePadding">6dp</dimen>
+    <dimen name="btnShadowPadding">4dp</dimen>
+    <dimen name="btnMainPadding">3dp</dimen>
+    <dimen name="btnRadius">5dp</dimen>
+    <dimen name="btnShadowRadius">5dp</dimen>
+    <item name="gradAngle" type="integer">90</item>
+    <!-- List view -->
+    <dimen name="displayNameText">17sp</dimen>
+    <dimen name="displayNameLeftPadding">12dp</dimen>
+    <dimen name="displayNameTopPadding">9dp</dimen>
+    <dimen name="clientNameText">14sp</dimen>
+    <dimen name="clientNameLeftPadding">12dp</dimen>
+    <dimen name="clientNameTopPadding">2dp</dimen>
+    <dimen name="clientNameBottomPadding">9dp</dimen>
+    <dimen name="listArrowPadding">12dp</dimen>
+    <!-- Matter details -->
+    <dimen name="tableRowPadding">5dp</dimen>
+    <dimen name="tableContentBigText">17sp</dimen>
+    <dimen name="tableContentSmallText">14sp</dimen>
+    <dimen name="tableContentSmallPadding">4dp</dimen>
 
 </resources>

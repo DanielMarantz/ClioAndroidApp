@@ -2,25 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#222f33">
+    android:background="@color/listViewClr">
 
     <TextView android:id="@+id/displayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#D6DCE5"
-        android:textSize="17sp"
-        android:paddingLeft="12dp"
-        android:paddingTop="9dp"/>
+        android:textColor="@color/displayNameClr"
+        android:textSize="@dimen/displayNameText"
+        android:paddingLeft="@dimen/displayNameLeftPadding"
+        android:paddingTop="@dimen/displayNameTopPadding"/>
 
     <TextView android:id="@+id/clientName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/displayName"
-        android:textColor="#a4b3c5"
-        android:textSize="14sp"
-        android:paddingLeft="12dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="9dp"/>
+        android:textColor="@color/clientNameClr"
+        android:textSize="@dimen/clientNameText"
+        android:paddingLeft="@dimen/clientNameLeftPadding"
+        android:paddingTop="@dimen/clientNameTopPadding"
+        android:paddingBottom="@dimen/clientNameBottomPadding"/>
 
     <ImageView
         android:id="@+id/displayImage"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_alignParentRight="true"
-        android:padding="12dp"
+        android:padding="@dimen/listArrowPadding"
         android:src="@drawable/list_arrow"/>
 
 </RelativeLayout>
