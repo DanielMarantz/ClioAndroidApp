@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -27,14 +26,28 @@ import clio.project.main.ListAdapter;
 import clio.project.main.R;
 import clio.project.main.SharedPreference;
 
+/**
+ * Created by Daniel Marantz on 16/08/15.
+ *
+ * MattersController is the controller for the Matters objects.
+ */
 public class MattersController {
 
-    public SharedPreference mattersDatabase = new SharedPreference();
+    private SharedPreference mattersDatabase = new SharedPreference();
 
+    /**
+     * Converts a stream of data to a string. Also persists string data.
+     *
+     * @param inputStream  Stream of data to be converted to a String.
+     * @param context      The context of a Activity.
+     * @return             String of data that has been converted.
+     * @throws IOException
+     */
     public String convertInputStreamToString(InputStream inputStream, Context context) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
+
         while((line = bufferedReader.readLine()) != null)
             result += line;
 
@@ -45,7 +58,16 @@ public class MattersController {
         return result;
     }
 
+    /**
+     * Converts a JSON object into a Matters object.
+     *
+     * @param context        The context of a Activity.
+     * @param obj            JSON object to be converted.
+     * @return               Instantiated Matters object.
+     * @throws JSONException
+     */
     public Matters convertMatter(Context context, JSONObject obj) throws JSONException {
+        // Nested data in JSON object
         JSONObject nestedObj = (JSONObject)obj.get("client");
 
         String displayName = obj.getString("display_number");
@@ -54,17 +76,17 @@ public class MattersController {
         String openDate = obj.getString("open_date");
         String status = obj.getString("status");
 
-        Log.d("dataRequest", obj.getString("practice_area")); // TESSSSSSTTTTTTT
-        //         Log.d("1dataRequest", clientName);
-        //         Log.d("2dataRequest", description);
-        //         Log.d("3dataRequest", openDate);
-        //         Log.d("4dataRequest", status);
-
         return new Matters(displayName, clientName, description, openDate, status);
     }
 
-    // Given a String in JSON format convert it to a list of Matters
-    public ArrayList<Matters> populateList(String matterData, Context context) {
+    /**
+     * Given a String in JSON format converted to a list of Matters.
+     *
+     * @param matterData JSON data.
+     * @param context    The context of a Activity.
+     * @return           List of Matters.
+     */
+    public ArrayList<Matters> populateList(String matterData, Context context)  {
         ArrayList<Matters> prefList = new ArrayList<Matters>();
 
         try {
@@ -82,6 +104,12 @@ public class MattersController {
         return null;
     }
 
+    /**
+     * Checks if data is persisted, retrieves data.
+     *
+     * @param context The context of a Activity.
+     * @return        The restored data.
+     */
     public String restoreMatter(Context context) {
         if(mattersDatabase.isData(context))
             return mattersDatabase.getValue(context);
@@ -89,15 +117,25 @@ public class MattersController {
         return null;
     }
 
-    // text of total matters in the custom title bar
+    /**
+     * Setter of the total matters in custom title bar.
+     *
+     * @param context The context of a Activity.
+     * @param total   The total of Matters.
+     */
     public void setTotalMatters(Context context, int total) {
         TextView totalMatters = (TextView)((Activity)(context)).findViewById(R.id.totalNumber);
         totalMatters.setText("" + total);
     }
 
-    // button that sends the user to the Matter Details
+    /**
+     * Displays Matter details in a custom dialog.
+     *
+     * @param position The location of the Matter in the list.
+     * @param context  The context of a Activity.
+     * @param adpt     The custom list adapter reference.
+     */
     public void matterDetails(int position, Context context, ListAdapter adpt) {
-        // custom dialog
         final Dialog dialog = new Dialog(context);
 
         dialog.requestWindowFeature(Window.FEATURE_LEFT_ICON);
@@ -106,7 +144,7 @@ public class MattersController {
         dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.clio_logo);
         dialog.setCancelable(false);
 
-        // set the custom dialog components - text, button
+        // Set the custom dialog components - text, button
         TextView displayText = (TextView) dialog.findViewById(R.id.displayName);
         displayText.setText(adpt.getItem(position).getDisplayName());
 
@@ -122,7 +160,7 @@ public class MattersController {
         TextView statusText = (TextView) dialog.findViewById(R.id.status);
         statusText.setText(adpt.getItem(position).getStatus());
 
-        //Close dialog button
+        // Close dialog button
         Button closeButton = (Button) dialog.findViewById(R.id.closeDialog);
 
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -135,32 +173,40 @@ public class MattersController {
         dialog.show();
     }
 
+    /**
+     * Displays an alert dialog regarding Network && no persisted data.
+     * Click event exits application.
+     *
+     * @param context The context of a Activity.
+     */
     public void displayAlert(final Context context) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
-        // set title
         alertDialogBuilder.setTitle("No Saved Data Or Network Connection");
 
-        // set dialog message
+        // Set dialog message
         alertDialogBuilder
                 .setMessage("Need network connection to retrieve initial data!")
                 .setCancelable(false)
                 .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // if this button is clicked, close
-                        // current activity
+                        // Close current activity
                         ((Activity)(context)).finish();
                     }
                 });
 
-        // create alert dialog
+        // Create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
-        // show it
         alertDialog.show();
     }
 
+    /**
+     * Locks the screen orientation given its current orientation.
+     *
+     * @param context The context of a Activity.
+     */
     public void lockScreenOrientation(Context context) {
         int currentOrientation = context.getResources().getConfiguration().orientation;
 
@@ -170,6 +216,11 @@ public class MattersController {
             ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    /**
+     * Unlocks the screens orientation.
+     *
+     * @param context The context of a Activity..
+     */
     public void unlockScreenOrientation(Context context) {
         ((Activity)(context)).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }

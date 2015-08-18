@@ -1,23 +1,25 @@
 package clio.project.main;
 
-/**
- * Created by Daniel Marantz on 14/08/15.
- */
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
+/**
+ * Created by Daniel Marantz on 14/08/15.
+ *
+ * SharedPreference is the persistence controller of the app.
+ */
 public class SharedPreference {
 
     public static final String PREFS_NAME = "MATTERS_FILE";
     public static final String PREFS_KEY = "MATTER_DATA";
 
-    public SharedPreference() {
-        super();
-    }
-
+    /**
+     * Saves String data to a file given a key.
+     *
+     * @param context The context of the activity.
+     * @param text    String of data to be persisted.
+     */
     public void save(Context context, String text) {
         SharedPreferences settings;
         Editor editor;
@@ -30,6 +32,12 @@ public class SharedPreference {
         editor.commit();
     }
 
+    /**
+     * Retrieves String data from a file given a key.
+     *
+     * @param context The context of the activity.
+     * @return        The data retrieved as a String.
+     */
     public String getValue(Context context) {
         SharedPreferences settings;
         String restoredText;
@@ -39,6 +47,11 @@ public class SharedPreference {
         return restoredText;
     }
 
+    /**
+     * Removes all data for a file.
+     *
+     * @param context The context of the activity.
+     */
     public void clearSharedPreference(Context context) {
         SharedPreferences settings;
         Editor editor;
@@ -50,6 +63,11 @@ public class SharedPreference {
         editor.commit();
     }
 
+    /**
+     * Removes data from a file given a key.
+     *
+     * @param context The context of the activity.
+     */
     public void removeValue(Context context) {
         SharedPreferences settings;
         Editor editor;
@@ -61,9 +79,15 @@ public class SharedPreference {
         editor.commit();
     }
 
+    /**
+     * Checks if data is persisted in a file given a key.
+     *
+     * @param context The context of the activity.
+     * @return        A Boolean containing state of stored data.
+     */
     public boolean isData(Context context) {
         SharedPreferences settings;
-        Log.d("restore3", "IsData");
+
         settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
         if (settings.contains(PREFS_KEY))

@@ -3,7 +3,6 @@ package clio.project.main;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,12 +10,20 @@ import java.net.URL;
 
 /**
  * Created by Daniel Marantz on 16/08/15.
+ *
+ * Network handles the connectivity of the app.
  */
 public class Network {
 
     private boolean isWifiConn;
     private boolean isMobileConn;
 
+    /**
+     * Checks the device to see if it is connected to the internet.
+     *
+     * @param context The context of the activity.
+     * @return        A boolean of the network state.
+     */
     public boolean isInternet(Context context) {
 
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -26,17 +33,18 @@ public class Network {
         networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         isMobileConn = networkInfo.isConnected();
 
-        if(isWifiConn)
-            Log.d("Network_State", "WIFI");
-        if(isMobileConn)
-            Log.d("Network_State", "MOBILE");
-
         if(isWifiConn || isMobileConn)
             return true;
 
         return false;
     }
 
+    /**
+     * Connects to the server, requests data.
+     *
+     * @param params The url to send and receive.
+     * @return       Response of the request.
+     */
     public InputStream connect(String... params) {
         InputStream inputStream = null;
 

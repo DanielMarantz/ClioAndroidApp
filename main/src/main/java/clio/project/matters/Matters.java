@@ -1,5 +1,11 @@
 package clio.project.matters;
 
+/**
+ * Created by Daniel Marantz on 15/08/15.
+ *
+ * Matters is a class modeling a Matter. With Getters and Setters
+ * of Matter attributes.
+ */
 public class Matters {
 
     private String displayName;
@@ -8,6 +14,15 @@ public class Matters {
     private String openDate;
     private String status;
 
+    /**
+     * Constructor of a Matter.
+     *
+     * @param displayName Display name of a Matter.
+     * @param clientName  Client name of a Matter.
+     * @param description Description of a Matter.
+     * @param openDate    Open date of a Matter.
+     * @param status      Status of a Matter.
+     */
     public Matters(String displayName, String clientName, String description, String openDate, String status) {
         super();
         this.displayName = displayName;

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,9 @@ import clio.project.main.R;
 
 /**
  * Created by Daniel Marantz on 15/08/15.
+ *
+ * MattersFragment is a listview component with Matters.
+ * AsyncListViewLoader implemented as a inner anonymous class.
  */
 public class MattersFragment extends Fragment {
 
@@ -35,23 +37,40 @@ public class MattersFragment extends Fragment {
     private Network network = new Network();
     private static final String url = "https://app.goclio.com/api/v2/matters";
 
-    // this method is only called once for this fragment
+    /**
+     * Called when the fragment is first created.
+     * Only called once for this fragment.
+     *
+     * @param savedInstanceState Saved aspects of the app.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Instantiating components
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         adpt  = new ListAdapter(result, getActivity());
 
         // Retrieve data from internet || shared preferences || Exits
         sendRequest();
+        // Setting only one creation for this fragment in the activity
         setRetainInstance(true);
     }
 
+    /**
+     * Called to create the view hierarchy associated with the fragment.
+     * Configures the UI layout with the listview.
+     *
+     * @param inflater           Instantiates a layout XML file into its corresponding View.
+     * @param container          A group of view children.
+     * @param savedInstanceState Saved aspects of the app.
+     * @return                   A view hierarchy.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // View of the XML layout
         View view = inflater.inflate(R.layout.fragment_main,
                 container, false);
 
@@ -65,78 +84,115 @@ public class MattersFragment extends Fragment {
                                     int position, long id) {
 
                 v.vibrate(100);
+                // Displays Matter details in a dialog
                 mController.matterDetails(position, getActivity(), adpt);
-                Log.d("dataRequest", "Position " + position);
             }
         });
 
         return view;
     }
 
+    /**
+     * Called when the activity's onCreate() method has returned.
+     * Sets the custom title bar with the matters count.
+     *
+     * @param savedInstanceState Saved aspects of the app.
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mController.setTotalMatters(getActivity(), result.size());
     }
 
+    /**
+     * Retrieves data depending on connectivity or displays network/no data
+     * alert.
+     */
     public void sendRequest() {
         String restoredData;
-        //Connection is good - send request
+
+        // Connection is good - send request
         if(network.isInternet(getActivity())) {
             // Exec async load task
             (new AsyncListViewLoader()).execute(url);
+            // Data available retrieve from device
         } else if(mController.restoreMatter(getActivity()) != null) {
-            // Restores the data from Shared Preferencs
             Toast.makeText(getActivity(), "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
+            // Restores the data from Shared Preferencs
             restoredData = mController.restoreMatter(getActivity());
             result = mController.populateList(restoredData, getActivity());
+            // Updates listview
             adpt.setItemList(result);
             adpt.notifyDataSetChanged();
         }
         else {
+            // Lock the screen and display alert
             mController.lockScreenOrientation(getActivity());
             mController.displayAlert(getActivity());
         }
     }
 
+    /**
+     * AsyncListViewLoader is a inner anonymous class handling async network requests.
+     */
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
 
         private final ProgressDialog dialog = new ProgressDialog(getActivity());
 
+        /**
+         * After AsyncTask has completed.
+         *
+         * @param result List of Matters.
+         */
         @Override
         protected void onPostExecute(List<Matters> result) {
             super.onPostExecute(result);
+            // Populates the listview with Matters
             adpt.setItemList(result);
-            mController.setTotalMatters(getActivity(), result.size());
-            mController.unlockScreenOrientation(getActivity());
-            dialog.dismiss();
             adpt.notifyDataSetChanged();
+
+            mController.setTotalMatters(getActivity(), result.size());
+            // Unlocks screen regarding activity threads and config change
+            mController.unlockScreenOrientation(getActivity());
+
+            dialog.dismiss();
         }
 
+        /**
+         * Before AsyncTask is completed.
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            // locks screen regarding activity threads and config change
             mController.lockScreenOrientation(getActivity());
+
             dialog.setMessage("Downloading Matters. Hang Tight...");
             dialog.show();
         }
 
+        /**
+         * Executes an asynchronous task.
+         *
+         * @param params Url to connect to the server.
+         * @return       List of Matters.
+         */
         @Override
         protected List<Matters> doInBackground(String... params) {
             String matterData = "";
             result = new ArrayList<Matters>();
 
             try {
+                // Response from the server(JSON)
                 InputStream inputStream = network.connect(params);
 
-                // convert inputstream to string
-                if(inputStream != null) {
+                // Convert input stream(JSON) to String
+                if(inputStream != null)
                     matterData = mController.convertInputStreamToString(inputStream, getActivity());
-                    Log.d("restore5", matterData);
-                }
                 else
-                    matterData = "Did not work!";
+                    matterData = "No Data!";
 
+                // Convert String to a list of Matters
                 result = mController.populateList(matterData, getActivity());
 
                 return result;
