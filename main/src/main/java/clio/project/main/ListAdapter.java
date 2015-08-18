@@ -19,6 +19,7 @@ public class ListAdapter extends ArrayAdapter<Matters> {
 
     private List<Matters> itemList;
     private Context context;
+    private LayoutInflater  inflater;
 
     /**
      * Constructor to initialize the listview data.
@@ -30,6 +31,7 @@ public class ListAdapter extends ArrayAdapter<Matters> {
         super(ctx, android.R.layout.simple_list_item_1, itemList);
         this.itemList = itemList;
         this.context = ctx;
+        inflater = LayoutInflater.from(context);
     }
 
     /**
@@ -80,22 +82,23 @@ public class ListAdapter extends ArrayAdapter<Matters> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-
-        if (v == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.list_item, null);
+        View row = convertView;
+        ViewHolder holder = null;
+        //inflate row layout
+        if (row == null) {
+            row = inflater.inflate(R.layout.list_item, null);
+            holder =new ViewHolder(row);
+            row.setTag(holder);
+        } else {
+            holder = (ViewHolder)row.getTag();
         }
         // Sets the the given Matter to the listview tab
         Matters m = itemList.get(position);
+        //show data
+        holder.displayName.setText(m.getDisplayName());
+        holder.clientName.setText(m.getClientName());
 
-        TextView mainListText1 = (TextView) v.findViewById(R.id.displayName);
-        mainListText1.setText(m.getDisplayName());
-
-        TextView mainListText2 = (TextView) v.findViewById(R.id.clientName);
-        mainListText2.setText(m.getClientName());
-
-        return v;
+        return row;
     }
 
     /**
@@ -116,4 +119,17 @@ public class ListAdapter extends ArrayAdapter<Matters> {
         this.itemList = itemList;
     }
 
+    /**
+     * ViewHolder is an inner anonymous class for listview optimization
+     */
+    class ViewHolder {
+
+        TextView displayName;
+        TextView clientName ;
+
+        public ViewHolder(View v){
+            displayName =(TextView) v.findViewById(R.id.displayName);
+            clientName =(TextView) v.findViewById(R.id.clientName);
+        }
+    }
 }
