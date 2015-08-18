@@ -12,11 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import clio.project.main.ListAdapter;
 import clio.project.main.R;
 
@@ -28,8 +26,8 @@ import clio.project.main.R;
  */
 public class MattersFragment extends Fragment {
 
-    private static Context context;
-    private static final String url = "https://app.goclio.com/api/v2/matters";
+    private Context context;
+    private static final String URL = "https://app.goclio.com/api/v2/matters";
 
     private Vibrator v;
     private ListAdapter adpt;
@@ -98,9 +96,9 @@ public class MattersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Since the Custom title bar is not part of the fragment
-        // to update the total it needs the new activity
-        mController.setTotalMatters(adpt.getCount(), getActivity());
+        // Called again to update the activity context(config change)
+        context = getActivity();
+        mController.setTotalMatters(adpt.getCount(), context);
     }
 
     /**
@@ -113,7 +111,7 @@ public class MattersFragment extends Fragment {
         // Connection is good - send request
         if(mController.checkNetwork(context)) {
             // Exec async load task
-            (new AsyncListViewLoader()).execute(url);
+            (new AsyncListViewLoader()).execute(URL);
             // Data available retrieve from device
         } else if(restoredData != null) {
             Toast.makeText(context, "Matters Loaded From Memory!", Toast.LENGTH_LONG).show();
@@ -134,7 +132,7 @@ public class MattersFragment extends Fragment {
      */
     private class AsyncListViewLoader extends AsyncTask<String, Void, List<Matters>> {
 
-        private final ProgressDialog dialog = new ProgressDialog(context);
+        private final ProgressDialog DIALOG = new ProgressDialog(context);
 
         /**
          * After AsyncTask has completed.
@@ -152,7 +150,7 @@ public class MattersFragment extends Fragment {
             // Unlocks screen regarding activity threads and config change
             mController.unlockScreenOrientation(context);
 
-            dialog.dismiss();
+            DIALOG.dismiss();
         }
 
         /**
@@ -164,8 +162,8 @@ public class MattersFragment extends Fragment {
             // locks screen regarding activity threads and config change
             mController.lockScreenOrientation(context);
 
-            dialog.setMessage("Downloading Matters. Hang Tight...");
-            dialog.show();
+            DIALOG.setMessage("Downloading Matters. Hang Tight...");
+            DIALOG.show();
         }
 
         /**
