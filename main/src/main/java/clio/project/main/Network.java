@@ -34,7 +34,6 @@ public class Network {
         if(isWifiConn || isMobileConn) {
             return true;
         }
-
         return false;
     }
 
@@ -62,7 +61,6 @@ public class Network {
         } catch(Throwable t) {
             t.printStackTrace();
         }
-
         return inputStream;
     }
 }

@@ -26,8 +26,9 @@ import clio.project.main.R;
  */
 public class MattersFragment extends Fragment {
 
-    private Context context;
     private static final String URL = "https://app.goclio.com/api/v2/matters";
+
+    private Context context;
 
     private Vibrator v;
     private ListAdapter adpt;
@@ -45,9 +46,7 @@ public class MattersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Getting application context
         context = getActivity();
-        // Instantiating components
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         adpt  = new ListAdapter(result, context);
         // Retrieve data from internet || shared preferences || Exits

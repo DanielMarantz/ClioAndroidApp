@@ -36,7 +36,6 @@ public class MattersParser {
         if (obj.has("status")) {
             matter.setStatus(obj.getString("status"));
         }
-
         return matter;
     }
 }
